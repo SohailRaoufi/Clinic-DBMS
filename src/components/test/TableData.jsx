@@ -1,0 +1,92 @@
+export const data = [
+  {
+    id: 1,
+    Patient_Name: "John Doe",
+    Treatment: "Teeth Cleaning",
+    Time: "10:00 AM",
+  },
+  {
+    id: 2,
+    Patient_Name: "Jane Smith",
+    Treatment: "Root Canal",
+    Time: "11:30 AM",
+  },
+  {
+    id: 3,
+    Patient_Name: "Emily Johnson",
+    Treatment: "Dental Filling",
+    Time: "1:00 PM",
+  },
+  {
+    id: 4,
+    Patient_Name: "Michael Brown",
+    Treatment: "Tooth Extraction",
+    Time: "2:45 PM",
+  },
+  {
+    id: 5,
+    Patient_Name: "Sophia Davis",
+    Treatment: "Teeth Whitening",
+    Time: "4:00 PM",
+  },
+  {
+    id: 6,
+    Patient_Name: "William Garcia",
+    Treatment: "Braces Adjustment",
+    Time: "9:15 AM",
+  },
+  {
+    id: 7,
+    Patient_Name: "Isabella Martinez",
+    Treatment: "Crown Replacement",
+    Time: "10:45 AM",
+  },
+  {
+    id: 8,
+    Patient_Name: "James Miller",
+    Treatment: "Dental Implant",
+    Time: "12:15 PM",
+  },
+  {
+    id: 9,
+    Patient_Name: "Olivia Wilson",
+    Treatment: "Gum Surgery",
+    Time: "2:00 PM",
+  },
+  {
+    id: 10,
+    Patient_Name: "Lucas Anderson",
+    Treatment: "Teeth Cleaning",
+    Time: "3:30 PM",
+  },
+  {
+    id: 11,
+    Patient_Name: "Ava Thomas",
+    Treatment: "Wisdom Teeth Removal",
+    Time: "8:45 AM",
+  },
+  {
+    id: 12,
+    Patient_Name: "Mason Jackson",
+    Treatment: "Root Canal",
+    Time: "10:00 AM",
+  },
+  {
+    id: 13,
+    Patient_Name: "Liam White",
+    Treatment: "Dental Filling",
+    Time: "11:15 AM",
+  },
+  {
+    id: 14,
+    Patient_Name: "Charlotte Harris",
+    Treatment: "Cavity Treatment",
+    Time: "1:45 PM",
+  },
+  {
+    id: 15,
+    Patient_Name: "Ethan Lewis",
+    Treatment: "Tooth Extraction",
+    Time: "3:00 PM",
+  },
+];

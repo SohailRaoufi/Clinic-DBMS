@@ -1,0 +1,30 @@
+.tooth_chart {
+    width: 300px;
+    fill: white;
+}
+
+.Spots polygon {
+    -webkit-transition: fill 0.25s;
+    transition: fill 0.25s;
+}
+
+.Spots path {
+    -webkit-transition: fill 0.25s;
+    transition: fill 0.25s;
+}
+
+.Spots polygon:hover {
+    fill: #dddddd !important;
+}
+
+.Spots polygon:active {
+    fill: #dddddd !important;
+}
+
+.Spots path:hover {
+    fill: #dddddd !important;
+}
+
+.Spots path:active {
+    fill: #dddddd !important;
+}

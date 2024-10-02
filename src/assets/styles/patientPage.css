@@ -1,0 +1,29 @@
+.pateint-btn {
+  position: absolute !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  right: 0;
+  top: 0.8rem;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  margin: 5rem 2rem 0 2rem;
+}
+.table-head {
+  position: relative;
+  padding-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.head-text {
+  margin-top: 1rem;
+}
+
+.patient-table {
+  margin-top: 7rem;
+}

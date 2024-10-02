@@ -1,0 +1,10 @@
+.navsearch {
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  padding-top: 3rem;
+  gap: 1rem;
+}
+.navsearch input {
+  width: 25rem;
+}

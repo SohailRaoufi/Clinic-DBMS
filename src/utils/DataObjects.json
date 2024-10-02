@@ -1,0 +1,73 @@
+{
+  "TeethStateGraph": {
+    "OneTr": false,
+    "TwoTr": false,
+    "ThreeTr": false,
+    "FourTr": false,
+    "FiveTr": false,
+    "SixTr": false,
+    "SevenTr": false,
+    "EightTr": false,
+    "OneTl": false,
+    "TwoTl": false,
+    "ThreeTl": false,
+    "FourTl": false,
+    "FiveTl": false,
+    "SixTl": false,
+    "SevenTl": false,
+    "EigthTl": false,
+    "OneBr": false,
+    "TwoBr": false,
+    "ThreeBr": false,
+    "FourBr": false,
+    "FiveBr": false,
+    "SixBr": false,
+    "SevenBr": false,
+    "EightBr": false,
+    "OneBl": false,
+    "TwoBl": false,
+    "ThreeBl": false,
+    "FourBl": false,
+    "FiveBl": false,
+    "SixBl": false,
+    "SevenBl": false,
+    "EightBl": false
+  },
+
+  "Operations": [
+    { "label": "Extraction", "value": "Extraction", "name": "ops" },
+    { "label": "Apoxtomy", "value": "Apoxtomy", "name": "ops" },
+    { "label": "Colemectomy", "value": "Colemectomy", "name": "ops" },
+    { "label": "RCT", "value": "RCT", "name": "ops" },
+    { "label": "Filling", "value": "Filling", "name": "ops" },
+    {
+      "label": "Repair & Retreive",
+      "value": "Repair & Retreive",
+      "name": "ops"
+    },
+    { "label": "Implant", "value": "Implant", "name": "ops" },
+    { "label": "Orthodontics", "value": "Orthodontics", "name": "ops" },
+    {
+      "label": "Removable Denture",
+      "value": "Removable Denture",
+      "name": "ops"
+    },
+    { "label": "Crown Metal", "value": "Crown Metal", "name": "ops" },
+    { "label": "Crown Porcelin", "value": "Crown Porcelin", "name": "ops" },
+    { "label": "Crown Zarconia", "value": "Crown Zarconia", "name": "ops" },
+    { "label": "Crown Cadlcam", "value": "Crown Cadlcam", "name": "ops" },
+    {
+      "label": "Preflex Felxinylon",
+      "value": "Preflex Felxinylon",
+      "name": "ops"
+    },
+    {
+      "label": "Scaling & Air Polishing",
+      "value": "Scaling & Air Polishing",
+      "name": "ops"
+    },
+    { "label": "Tooth gems", "value": "Tooth gems", "name": "ops" },
+    { "label": "Bleach", "value": "Bleach", "name": "ops" },
+    { "label": "Venner", "value": "Venner", "name": "ops" }
+  ]
+}
