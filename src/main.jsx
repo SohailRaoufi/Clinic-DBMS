@@ -10,6 +10,7 @@ import Patient from "./pages/Patient";
 import AddPatient from "./pages/AddPatient";
 import Appointment from "./pages/Appointment";
 import PatientDetail from "./pages/PatientDetail";
+import AddAppointment from "./pages/AddAppointmnet";
 
 import "./index.css";
 
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "/appointments",
         element: <Appointment />,
+      },
+      {
+        path: "/appointment/add",
+        element: <AddAppointment />,
       },
     ],
   },

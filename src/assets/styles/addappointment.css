@@ -1,0 +1,18 @@
+.add-appointmnet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 90%;
+  width: 90%;
+  background-color: white;
+}
+.form-appointment {
+  width: 20rem;
+  padding: 1.25rem;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

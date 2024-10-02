@@ -1,0 +1,10 @@
+.filter {
+  width: 10rem;
+  display: flex;
+  gap: 1rem;
+  text-wrap: nowrap;
+  position: absolute;
+  top: 0;
+  right: 22rem;
+  align-items: center;
+}

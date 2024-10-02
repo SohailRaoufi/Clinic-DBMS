@@ -34,7 +34,7 @@ export default function PatientDetail() {
   return (
     <div className="container mx-auto p-8">
       {/* Patient Details Section */}
-      <div className="box1 bg-white shadow-lg rounded-lg p-6 mb-12">
+      <div className="box1 bg-whit p-6 mb-12">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">
           Patient {state.patient.id} Details
         </h2>
@@ -119,56 +119,6 @@ export default function PatientDetail() {
             <p className="text-lg font-medium text-gray-900">{patient.notes}</p>
           </div>
         </div>
-      </div>
-
-      {/* Appointments Section */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-800">Appointments</h2>
-          <Button className="flex justify-center align-middle">
-            <PlusIcon style={{ height: "18px" }} />
-            Add Appointment
-          </Button>
-        </div>
-
-        <table className="w-full table-auto text-left">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                Date
-              </th>
-              <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                Time
-              </th>
-              <th className="px-4 py-2 text-sm font-medium text-gray-600">
-                Reason
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.length === 0 ? (
-              <tr>
-                <td className="px-4 py-4 text-sm text-gray-500" colSpan={3}>
-                  No appointments scheduled.
-                </td>
-              </tr>
-            ) : (
-              appointments.map((appointment, index) => (
-                <tr key={index} className="border-t">
-                  <td className="px-4 py-4 text-gray-700">
-                    {appointment.date}
-                  </td>
-                  <td className="px-4 py-4 text-gray-700">
-                    {appointment.time}
-                  </td>
-                  <td className="px-4 py-4 text-gray-700">
-                    {appointment.reason}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
       </div>
     </div>
   );
