@@ -1,4 +1,4 @@
-import { Card, Typography } from "@material-tailwind/react";
+import { Card, Typography, Button } from "@material-tailwind/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -6,10 +6,11 @@ import Mypagination from "./MyPagination";
 
 import "./styles/table.css";
 
-export default function Table({ Table_head, data }) {
+export default function Table({ Table_head, data, action }) {
   const TABLE_HEAD = Table_head;
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage] = useState(10);
+  const [Tabaction, setAction] = useState(action);
 
   // Calculate the indexes for the current page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -41,15 +42,17 @@ export default function Table({ Table_head, data }) {
                   </Typography>
                 </th>
               ))}
-              <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                >
-                  Action
-                </Typography>
-              </th>
+              {Tabaction && (
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    Action
+                  </Typography>
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -66,31 +69,18 @@ export default function Table({ Table_head, data }) {
                     </Typography>
                   </td>
                 ))}
-                <td className="p-4 flex gap-3">
-                  <Link>
-                    <Typography
-                      as="p"
-                      variant="small"
-                      color="blue-gray"
-                      className="font-medium"
+                {Tabaction && (
+                  <td className="">
+                    <Link
+                      to={`/dashboard/patients/${patient.id}`}
+                      state={{ patient: patient }}
                     >
-                      Edit
-                    </Typography>
-                  </Link>
-                  <Link
-                    to={`/patients/${patient.id}`}
-                    state={{ patient: patient }}
-                  >
-                    <Typography
-                      as="p"
-                      variant="small"
-                      color="blue-gray"
-                      className="font-medium"
-                    >
-                      Detail
-                    </Typography>
-                  </Link>
-                </td>
+                      <Button variant="text" size="sm" className="font-medium">
+                        Detail
+                      </Button>
+                    </Link>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

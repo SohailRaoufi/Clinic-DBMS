@@ -62,9 +62,13 @@ export default function AddPatient() {
       name: selectedOps[0],
     };
 
-    if (new_treatment.amount === "0" || new_treatment.name === "") {
+    if (
+      new_treatment.amount === "0" ||
+      Math.sign(new_treatment.amount) == -1 ||
+      new_treatment.name === ""
+    ) {
       setError(
-        "Please Ensure you have Choosen the Treatement and added the Amount!"
+        "Please Ensure you have Choosen the Treatement and added the Correct Amount!"
       );
     } else {
       setError("");

@@ -19,3 +19,9 @@
   flex-direction: column;
   gap: 0.8rem;
 }
+.status {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  align-items: center;
+}

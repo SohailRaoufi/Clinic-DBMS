@@ -2,13 +2,25 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import "../assets/styles/patientdetail.css";
-import { Button } from "@material-tailwind/react";
+import {
+  Button,
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel,
+} from "@material-tailwind/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-export default function PatientDetail() {
-  let { state } = useLocation();
-  console.log(state);
 
-  const [patient] = useState({
+import data from "../components/test/LogsData";
+import Table from "../components/Table";
+
+export default function PatientDetail() {
+  const Table_head = Object.keys(data[0]);
+
+  const { state } = useLocation();
+
+  const [patient, setPatient] = useState({
     name: "John",
     last_name: "Doe",
     addr: "123 Main St, City, Country",
@@ -25,11 +37,6 @@ export default function PatientDetail() {
     reflux: false,
     notes: "No special notes.",
   });
-
-  const [appointments] = useState([
-    { date: "2024-10-10", time: "10:00 AM", reason: "Routine Checkup" },
-    { date: "2024-10-15", time: "02:00 PM", reason: "Follow-up" },
-  ]);
 
   return (
     <div className="container mx-auto p-8">
@@ -118,6 +125,33 @@ export default function PatientDetail() {
             <p className="text-sm text-gray-500">Notes</p>
             <p className="text-lg font-medium text-gray-900">{patient.notes}</p>
           </div>
+        </div>
+
+        <div className="tab">
+          <Tabs value="logs">
+            <TabsHeader>
+              <Tab key="logs" value="logs">
+                Logs
+              </Tab>
+              <Tab key="treatment" value="treatment">
+                Treatment
+              </Tab>
+              <Tab key="payment" value="payment">
+                Payment
+              </Tab>
+            </TabsHeader>
+            <TabsBody>
+              <TabPanel key="logs" value="logs">
+                <Table Table_head={Table_head} data={data} action={false} />
+              </TabPanel>
+              <TabPanel key="treatment" value="treatment">
+                Treatment
+              </TabPanel>
+              <TabPanel key="payment" value="payment">
+                Payment
+              </TabPanel>
+            </TabsBody>
+          </Tabs>
         </div>
       </div>
     </div>

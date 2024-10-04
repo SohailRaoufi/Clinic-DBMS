@@ -43,7 +43,7 @@ export default function Dashboard() {
           </Link>
         </div>
         <div className="table-body">
-          <Table Table_head={Table_head} data={filteredData} />
+          <Table Table_head={Table_head} data={filteredData} action={false} />
         </div>
       </div>
     </>

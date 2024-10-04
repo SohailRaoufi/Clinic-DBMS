@@ -25,7 +25,7 @@ export default function Patient() {
           <h1 className="head-text">All Patients</h1>
         </div>
         <div className="table-body">
-          <Table Table_head={Table_head} data={PatientData} />
+          <Table Table_head={Table_head} data={PatientData} action={true} />
         </div>
       </div>
     </div>
