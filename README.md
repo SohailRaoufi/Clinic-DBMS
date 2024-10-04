@@ -1,8 +1,23 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Clinic DBMS
 
-Currently, two official plugins are available:
+A Freindly Web app developed in React JS for controling the overall operations of a Clinic. This is the Frontend of Clinic DBMS. The Backend API is avaliable in - [@Clinic API](https://www.github.com/SohailRaoufi/Clinic-API).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+
+## Authors
+
+- [@sohailraoufi](https://www.github.com/SohailRaoufi)
+
+
+## Deployment
+
+To deploy this project run
+
+```bash
+  npm install
+```
+```bash
+  npm run dev
+```
+
