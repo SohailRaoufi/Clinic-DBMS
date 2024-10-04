@@ -24,6 +24,7 @@ import json from "../utils/DataObjects.json";
 import "../assets/styles/addpatient.css";
 export default function AddPatient() {
   const [open, setOpen] = useState(false);
+  const [error, setError] = useState("");
 
   const handleOpen = () => setOpen(!open);
 
@@ -61,11 +62,18 @@ export default function AddPatient() {
       name: selectedOps[0],
     };
 
-    setTreatments([...treatments, new_treatment]);
-    setNewTreatment({ name: "", teeths: "", amount: "0", amount_paid: "0" });
-    setSelectedOps([]);
-    updateTeethGraph(teethStateGraph);
-    setOpen(false);
+    if (new_treatment.amount === "0" || new_treatment.name === "") {
+      setError(
+        "Please Ensure you have Choosen the Treatement and added the Amount!"
+      );
+    } else {
+      setError("");
+      setTreatments([...treatments, new_treatment]);
+      setNewTreatment({ name: "", teeths: "", amount: "0", amount_paid: "0" });
+      setSelectedOps([]);
+      updateTeethGraph(teethStateGraph);
+      setOpen(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -294,6 +302,7 @@ export default function AddPatient() {
               </div>
 
               <div className="mt-4 mb-4">
+                {error && <Typography color="red">{error}</Typography>}
                 <label className="block text-sm font-medium text-gray-700">
                   Total Amount
                 </label>

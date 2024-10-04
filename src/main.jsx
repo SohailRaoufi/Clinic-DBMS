@@ -12,37 +12,53 @@ import Appointment from "./pages/Appointment";
 import PatientDetail from "./pages/PatientDetail";
 import AddAppointment from "./pages/AddAppointmnet";
 
+import Auth from "./pages/Auth";
+import PrivateRoute from "./utils/PrivateRouter";
+
 import "./index.css";
+
+if (!localStorage.getItem("HOST")) {
+  localStorage.setItem("HOST", "http://localhost:8000");
+}
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
-    errorElement: <Page404 />,
+    element: <Auth />,
+  },
+  {
+    element: <PrivateRoute />,
     children: [
       {
-        path: "/",
-        element: <Dashboard />,
-      },
-      {
-        path: "/patients",
-        element: <Patient />,
-      },
-      {
-        path: "/patients/add",
-        element: <AddPatient />,
-      },
-      {
-        path: "/patients/:id",
-        element: <PatientDetail />,
-      },
-      {
-        path: "/appointments",
-        element: <Appointment />,
-      },
-      {
-        path: "/appointment/add",
-        element: <AddAppointment />,
+        path: "/dashboard",
+        element: <Root />,
+        errorElement: <Page404 />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <Dashboard />,
+          },
+          {
+            path: "/dashboard/patients",
+            element: <Patient />,
+          },
+          {
+            path: "/dashboard/patients/add",
+            element: <AddPatient />,
+          },
+          {
+            path: "/dashboard/patients/:id",
+            element: <PatientDetail />,
+          },
+          {
+            path: "/dashboard/appointments",
+            element: <Appointment />,
+          },
+          {
+            path: "/dashboard/appointment/add",
+            element: <AddAppointment />,
+          },
+        ],
       },
     ],
   },
