@@ -21,6 +21,9 @@ import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import "./styles/sidebar.css";
 
+import { LogOut } from "../utils/Logout";
+import { useNavigate } from "react-router-dom";
+
 export function NavbarSimple() {
   const [open, setOpen] = React.useState(0);
 
@@ -28,8 +31,13 @@ export function NavbarSimple() {
     setOpen(open === value ? 0 : value);
   };
 
+  const navigate = useNavigate();
+  const handleLogOut = () => {
+    LogOut();
+    navigate("/");
+  };
   return (
-    <Card className="side h-screen shadow-lg p-4">
+    <Card className="relative side h-screen shadow-lg p-4">
       <div className="mb-2 p-4">
         <Typography variant="h5" color="blue-gray">
           Dental Clinic
@@ -37,7 +45,7 @@ export function NavbarSimple() {
       </div>
       <List>
         <Accordion open={open === 1}>
-          <Link to="/">
+          <Link to="/dashboard">
             <ListItem className="p-0" selected={open === 1}>
               <AccordionHeader
                 onClick={() => handleOpen(1)}
@@ -79,7 +87,7 @@ export function NavbarSimple() {
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
-              <Link to="/patients">
+              <Link to="/dashboard/patients">
                 <ListItem>
                   <ListItemPrefix>
                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
@@ -87,7 +95,7 @@ export function NavbarSimple() {
                   Patients
                 </ListItem>
               </Link>
-              <Link to="/appointments">
+              <Link to="/dashboard/appointments">
                 <ListItem>
                   <ListItemPrefix>
                     <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
@@ -118,12 +126,19 @@ export function NavbarSimple() {
             </ListItemPrefix>
             Settings
           </ListItem>
-          <ListItem>
-            <ListItemPrefix>
-              <PowerIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Log Out
-          </ListItem>
+          <div className="user-box">
+            <Typography variant="h5" className="ml-3">
+              {localStorage.getItem("user")[0].toUpperCase() +
+                localStorage.getItem("user").substring(1)}
+            </Typography>
+            <hr className="my-2 border-blue-gray-50" />
+            <ListItem onClick={handleLogOut}>
+              <ListItemPrefix>
+                <PowerIcon className="h-5 w-5" />
+              </ListItemPrefix>
+              Log Out
+            </ListItem>
+          </div>
         </div>
       </List>
     </Card>

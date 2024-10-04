@@ -1,3 +1,11 @@
 .side {
   width: 18rem;
 }
+.user-box {
+  width: 85%;
+  position: absolute;
+  bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

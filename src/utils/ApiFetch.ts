@@ -39,6 +39,10 @@ const handleResponse = async (response: Response): Promise<ReturnType> => {
   return { success: true, status: response.status, data: data };
 };
 
+const handleServerError = (error: Error) => {
+  return { success: false, status: 500, data: { detail: "Server Error!" } };
+};
+
 // GET request
 export const get = async (
   path: string,
@@ -66,16 +70,22 @@ export const post = async (
   const { headers = {}, body } = options;
   const url = buildUrl(path);
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
-    body: JSON.stringify(body),
-  });
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
+      body: JSON.stringify(body),
+    });
 
-  return handleResponse(response);
+    console.log(response);
+
+    return handleResponse(response);
+  } catch (e: any) {
+    return handleServerError(e);
+  }
 };
 
 // PUT request

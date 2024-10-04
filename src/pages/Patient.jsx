@@ -16,7 +16,7 @@ export default function Patient() {
       <NavbarSearch />
       <div className="flex-col table patient-table">
         <div className="table-head">
-          <Link to="/patients/add">
+          <Link to="/dashboard/patients/add">
             <Button className="pateint-btn">
               <PlusIcon style={{ height: "18px" }} />
               Add Patient

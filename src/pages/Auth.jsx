@@ -29,7 +29,8 @@ export default function Auth() {
       return;
     }
     if (response.data?.token) {
-      localStorage.setItem("token", response.data.token); // Store JWT
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", username); // Store JWT
       navigate("/dashboard"); // Redirect to home or dashboard after login
     }
     setLoading(false);

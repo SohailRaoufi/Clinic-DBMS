@@ -25,6 +25,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Auth />,
+    errorElement: <Page404 />,
   },
   {
     element: <PrivateRoute />,

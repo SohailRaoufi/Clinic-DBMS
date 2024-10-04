@@ -36,7 +36,7 @@ export default function Dashboard() {
             Filter By Date:{" "}
             <Input value={filterDate} onChange={handleChange} type="date" />
           </Typography>
-          <Link to="/appointment/add">
+          <Link to="/dashboard/appointment/add">
             <Button className=" !absolute top-0 right-0">
               Add Appointment
             </Button>
