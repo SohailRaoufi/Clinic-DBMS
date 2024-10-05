@@ -1,23 +1,63 @@
 import { NavbarSearch } from "../components/Navbar";
-import { Button } from "@material-tailwind/react";
+import { Button, Card, Typography } from "@material-tailwind/react";
 import Table from "../components/Table";
 import { PlusIcon } from "@heroicons/react/16/solid";
+import { useState, useEffect } from "react";
 
-import { PatientData } from "../components/test/PatientData";
-
-const Table_head = Object.keys(PatientData[0]);
+import { get } from "../utils/ApiFetch";
 
 import "../assets/styles/patientPage.css";
 import { Link } from "react-router-dom";
+import Mypagination from "../components/MyPagination";
 
 export default function Patient() {
+  const [patients, setPatients] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
+  // Calculate the indexes for the current page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = patients.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(patients.length / itemsPerPage);
+
+  // Function to change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  useEffect(() => {
+    const get_data = async () => {
+      const response = await get("/api/patient/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (!response.success) {
+        console.log(response.data);
+        console.log(response.status);
+        return;
+      }
+
+      const data = response?.data;
+      if (!data || !data.results) {
+        console.log(`Unexpected data format: ${data}`);
+        return;
+      }
+      setPatients(data.results);
+      console.log(data);
+    };
+
+    get_data();
+  }, []);
+
   return (
     <div>
       <NavbarSearch />
       <div className="flex-col table patient-table">
         <div className="table-head">
           <Link to="/dashboard/patients/add">
-            <Button className="pateint-btn">
+            <Button className="patient-btn">
               <PlusIcon style={{ height: "18px" }} />
               Add Patient
             </Button>
@@ -25,7 +65,88 @@ export default function Patient() {
           <h1 className="head-text">All Patients</h1>
         </div>
         <div className="table-body">
-          <Table Table_head={Table_head} data={PatientData} action={true} />
+          <div className="tab">
+            <Card className="table-body h-full w-full overflow-scroll">
+              <table className="w-full min-w-max table-auto text-left">
+                <thead>
+                  <tr>
+                    <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal leading-none opacity-70"
+                      >
+                        Name
+                      </Typography>
+                    </th>
+                    <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal leading-none opacity-70"
+                      >
+                        Age
+                      </Typography>
+                    </th>
+                    <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal leading-none opacity-70"
+                      >
+                        Action
+                      </Typography>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItems.map((patient) => (
+                    <tr key={patient.id} className="even:bg-blue-gray-50/50">
+                      <td className="p-4">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {patient.name}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {patient.age}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Link
+                          to={`/dashboard/patients/${patient.id}`}
+                          state={{ patient: patient }}
+                        >
+                          <Button
+                            variant="text"
+                            size="sm"
+                            className="font-medium"
+                          >
+                            Detail
+                          </Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Card>
+            <div className="table-pag">
+              <Mypagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                paginate={paginate}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

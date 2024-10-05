@@ -10,7 +10,7 @@ export default function Table({ Table_head, data, action }) {
   const TABLE_HEAD = Table_head;
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  const [Tabaction, setAction] = useState(action);
+  const [Tabaction] = useState(action);
 
   // Calculate the indexes for the current page
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -58,7 +58,7 @@ export default function Table({ Table_head, data, action }) {
           <tbody>
             {currentItems.map((patient, index) => (
               <tr key={patient.id} className="even:bg-blue-gray-50/50">
-                {Table_head.filter((head) => head != "id").map((key) => (
+                {Object.keys(patient).map((key) => {
                   <td key={key} className="p-4">
                     <Typography
                       variant="small"
@@ -67,8 +67,8 @@ export default function Table({ Table_head, data, action }) {
                     >
                       {patient[key]}
                     </Typography>
-                  </td>
-                ))}
+                  </td>;
+                })}
                 {Tabaction && (
                   <td className="">
                     <Link
