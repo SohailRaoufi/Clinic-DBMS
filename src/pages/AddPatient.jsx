@@ -27,7 +27,6 @@ import "../assets/styles/addpatient.css";
 export default function AddPatient({ isEditing = false }) {
   const location = useLocation();
   const data = location.state?.data || [];
-  console.log(location);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [formError, setFormError] = useState();
@@ -35,8 +34,8 @@ export default function AddPatient({ isEditing = false }) {
   const navigate = useNavigate();
 
   const handleOpen = () => setOpen(!open);
-
-  const [treatments, setTreatments] = useState(data.treatments);
+  const [oldTreatments, setOldTreatments] = useState(data.treatments || []);
+  const [treatments, setTreatments] = useState([]);
   const [newTreatment, setNewTreatment] = useState({
     type_of_treatment: "",
     teeths: "",
@@ -159,6 +158,29 @@ export default function AddPatient({ isEditing = false }) {
         console.log(response);
 
         return;
+      }
+      if (treats != {}) {
+        const treat_response_data = {
+          treatments: {
+            ...treats,
+          },
+        };
+        const newResponse = await post(
+          `/api/patient/${data.data.id}/treatments/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: treat_response_data,
+          }
+        );
+
+        if (!newResponse.success) {
+          setFormError(newResponse.data);
+          console.log(response);
+
+          return;
+        }
       }
     } else {
       const response = await post("/api/patient/", {
@@ -307,6 +329,24 @@ export default function AddPatient({ isEditing = false }) {
           <Button onClick={handleOpen}>Add Treatment</Button>
 
           <div>
+            {oldTreatments.length > 0 && (
+              <Typography>Old Treatments</Typography>
+            )}
+            {oldTreatments.length > 0 &&
+              oldTreatments.map((treatment, index) => (
+                <li key={index} className="mb-2 p-2 bg-white rounded shadow">
+                  <p>
+                    <strong>Name:</strong> {treatment.type_of_treatment}
+                  </p>
+                  <p>
+                    <strong>Amount:</strong> {treatment.amount}
+                  </p>
+                </li>
+              ))}
+          </div>
+
+          <div>
+            {treatments.length > 0 && <Typography>New Treatments</Typography>}
             {treatments.length > 0 ? (
               treatments.map((treatment, index) => (
                 <li key={index} className="mb-2 p-2 bg-white rounded shadow">
@@ -319,7 +359,7 @@ export default function AddPatient({ isEditing = false }) {
                 </li>
               ))
             ) : (
-              <p style={{ marginTop: "10rem" }}>No Treatments!</p>
+              <p style={{ marginTop: "10rem" }}>No New Treatments!</p>
             )}
           </div>
 
