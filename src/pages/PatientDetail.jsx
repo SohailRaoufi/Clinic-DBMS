@@ -76,7 +76,6 @@ export default function PatientDetail() {
 
     fetchPatientData();
   }, [state.id]);
-  console.log(patient);
   // Pagination Part
   const {
     currentItems: logsItems,

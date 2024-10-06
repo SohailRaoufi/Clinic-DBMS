@@ -16,6 +16,8 @@ import {
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useState } from "react";
+import { post } from "../utils/ApiFetch";
+import { useNavigate } from "react-router-dom";
 
 import OperationOptionsTable from "../components/Chart";
 import ToothChart from "../components/ToothChart";
@@ -25,12 +27,15 @@ import "../assets/styles/addpatient.css";
 export default function AddPatient() {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
+  const [formError, setFormError] = useState();
+
+  const navigate = useNavigate();
 
   const handleOpen = () => setOpen(!open);
 
   const [treatments, setTreatments] = useState([]);
   const [newTreatment, setNewTreatment] = useState({
-    name: "",
+    type_of_treatment: "",
     teeths: "",
     amount: "0",
     amount_paid: "0",
@@ -81,13 +86,11 @@ export default function AddPatient() {
   };
 
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    console.error(name);
-    console.error(value);
-    console.error(type);
+    const { name, value, type, checked } = e.target;
+
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? value : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -109,11 +112,11 @@ export default function AddPatient() {
     notes: "",
   });
 
-  const text_fields = ["name", "last_name", "address", "job", "phone"];
+  const text_fields = ["name", "last_name", "addr", "job", "phone_no"];
   const checkbox_fields = [
-    "hiv",
-    "hcv",
-    "hbs",
+    "HIV",
+    "HCV",
+    "HBS",
     "pregnancy",
     "diabaetes",
     "reflux",
@@ -125,6 +128,11 @@ export default function AddPatient() {
     treatments.forEach((a, index) => {
       treats[index] = a; // Assign each treatment to the `treats` object with the index as key
     });
+
+    if (treats == {}) {
+      setFormError({ add_treatment: "Please Add a Treatmetnt!" });
+      return;
+    }
     const response_data = {
       ...formData,
       treatments: {
@@ -139,11 +147,12 @@ export default function AddPatient() {
     });
 
     if (!response.success) {
-      console.log(response_data);
+      setFormError(response.data);
+      console.log(response);
+
       return;
     }
-
-    navigate("/home");
+    navigate("/dashboard/patients");
   };
 
   return (
@@ -152,6 +161,13 @@ export default function AddPatient() {
         <Typography variant="h4" color="blue-gray">
           Add Patient
         </Typography>
+        {formError && (
+          <Typography color="red">
+            {Object.keys(formError).map((key) => {
+              return formError[key];
+            })}
+          </Typography>
+        )}
       </div>
       <div className="form">
         <div className="form-body">
@@ -167,6 +183,7 @@ export default function AddPatient() {
                       {field.charAt(0).toUpperCase() + field.slice(1)}
                     </Typography>
                     <Input
+                      onChange={handleChange}
                       color="teal"
                       type="text"
                       label={field}
@@ -180,6 +197,8 @@ export default function AddPatient() {
                 <div>
                   <Typography>Age</Typography>
                   <Input
+                    onChange={handleChange}
+                    name="age"
                     color="teal"
                     type="number"
                     min="0"
@@ -190,6 +209,7 @@ export default function AddPatient() {
                 <div>
                   <Typography>Gender</Typography>
                   <select
+                    onChange={handleChange}
                     name="gender"
                     required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -202,6 +222,7 @@ export default function AddPatient() {
                 <div>
                   <Typography>Marital Status</Typography>
                   <select
+                    onChange={handleChange}
                     name="martial_status"
                     required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -214,15 +235,20 @@ export default function AddPatient() {
 
                 {checkbox_fields.map((field) => (
                   <div>
-                    <Checkbox label={field.toUpperCase()} />
+                    <Checkbox
+                      onChange={handleChange}
+                      label={field.toUpperCase()}
+                      name={field}
+                    />
                   </div>
                 ))}
 
                 <div className="column-span-2">
                   <Typography>Notes</Typography>
                   <textarea
+                    onChange={handleChange}
                     placeholder="Notes"
-                    name="observation"
+                    name="notes"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                 </div>
