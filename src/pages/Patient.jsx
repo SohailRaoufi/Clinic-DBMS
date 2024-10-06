@@ -19,6 +19,7 @@ export default function Patient() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = patients.slice(indexOfFirstItem, indexOfLastItem);
+  console.log(currentItems);
 
   // Calculate total pages
   const totalPages = Math.ceil(patients.length / itemsPerPage);
@@ -45,7 +46,6 @@ export default function Patient() {
         return;
       }
       setPatients(data.results);
-      console.log(data);
     };
 
     get_data();
@@ -123,7 +123,7 @@ export default function Patient() {
                       <td>
                         <Link
                           to={`/dashboard/patients/${patient.id}`}
-                          state={{ patient: patient }}
+                          state={{ id: patient.id }}
                         >
                           <Button
                             variant="text"
