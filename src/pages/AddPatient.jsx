@@ -15,16 +15,19 @@ import {
 } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { useState } from "react";
-import { post } from "../utils/ApiFetch";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { post, put } from "../utils/ApiFetch";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import OperationOptionsTable from "../components/Chart";
 import ToothChart from "../components/ToothChart";
 import json from "../utils/DataObjects.json";
 
 import "../assets/styles/addpatient.css";
-export default function AddPatient() {
+export default function AddPatient({ isEditing = false }) {
+  const location = useLocation();
+  const data = location.state?.data || [];
+  console.log(location);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [formError, setFormError] = useState();
@@ -33,7 +36,7 @@ export default function AddPatient() {
 
   const handleOpen = () => setOpen(!open);
 
-  const [treatments, setTreatments] = useState([]);
+  const [treatments, setTreatments] = useState(data.treatments);
   const [newTreatment, setNewTreatment] = useState({
     type_of_treatment: "",
     teeths: "",
@@ -64,7 +67,7 @@ export default function AddPatient() {
     const new_treatment = {
       ...newTreatment,
       teeths: get_teeths_from_graph(teethGraph),
-      name: selectedOps[0],
+      type_of_treatment: selectedOps[0],
     };
 
     if (
@@ -78,7 +81,12 @@ export default function AddPatient() {
     } else {
       setError("");
       setTreatments([...treatments, new_treatment]);
-      setNewTreatment({ name: "", teeths: "", amount: "0", amount_paid: "0" });
+      setNewTreatment({
+        type_of_treatment: "",
+        teeths: "",
+        amount: "0",
+        amount_paid: "0",
+      });
       setSelectedOps([]);
       updateTeethGraph(teethStateGraph);
       setOpen(false);
@@ -139,27 +147,48 @@ export default function AddPatient() {
         ...treats,
       },
     };
-    const response = await post("/api/patient/", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: response_data,
-    });
+    if (isEditing) {
+      const response = await put(`/api/patient/${data.data.id}/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: response_data,
+      });
+      if (!response.success) {
+        setFormError(response.data);
+        console.log(response);
 
-    if (!response.success) {
-      setFormError(response.data);
-      console.log(response);
+        return;
+      }
+    } else {
+      const response = await post("/api/patient/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: response_data,
+      });
+      if (!response.success) {
+        setFormError(response.data);
+        console.log(response);
 
-      return;
+        return;
+      }
     }
+
     navigate("/dashboard/patients");
   };
+
+  useEffect(() => {
+    if (isEditing) {
+      setFormData(data.data);
+    }
+  }, [isEditing, data]);
 
   return (
     <div className="h-screen">
       <div className="h-10 p-5">
         <Typography variant="h4" color="blue-gray">
-          Add Patient
+          {isEditing ? "Edit Patient" : "Add Patient"}
         </Typography>
         {formError && (
           <Typography color="red">
@@ -189,6 +218,7 @@ export default function AddPatient() {
                       label={field}
                       name={field}
                       key={field}
+                      value={formData[field]}
                       required
                     />
                   </div>
@@ -203,6 +233,7 @@ export default function AddPatient() {
                     type="number"
                     min="0"
                     max="100"
+                    value={formData.age}
                     required
                   />
                 </div>
@@ -211,6 +242,7 @@ export default function AddPatient() {
                   <select
                     onChange={handleChange}
                     name="gender"
+                    value={formData.gender}
                     required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   >
@@ -223,6 +255,7 @@ export default function AddPatient() {
                   <Typography>Marital Status</Typography>
                   <select
                     onChange={handleChange}
+                    value={formData.martial_status}
                     name="martial_status"
                     required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -239,6 +272,7 @@ export default function AddPatient() {
                       onChange={handleChange}
                       label={field.toUpperCase()}
                       name={field}
+                      value={formData[field]}
                     />
                   </div>
                 ))}
@@ -248,12 +282,15 @@ export default function AddPatient() {
                   <textarea
                     onChange={handleChange}
                     placeholder="Notes"
+                    value={formData.notes}
                     name="notes"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                 </div>
                 <div className="column-span-2">
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit">
+                    {isEditing ? "Update" : "Submit"}
+                  </Button>
                 </div>
               </div>
             </form>
@@ -274,7 +311,7 @@ export default function AddPatient() {
               treatments.map((treatment, index) => (
                 <li key={index} className="mb-2 p-2 bg-white rounded shadow">
                   <p>
-                    <strong>Name:</strong> {treatment.name}
+                    <strong>Name:</strong> {treatment.type_of_treatment}
                   </p>
                   <p>
                     <strong>Amount:</strong> {treatment.amount}

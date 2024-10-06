@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import usePagination from "../components/usePagination";
 import Mypagination from "../components/MyPagination";
 
@@ -17,12 +17,14 @@ import {
 
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import { get } from "../utils/ApiFetch";
+import { get, del } from "../utils/ApiFetch";
 
 export default function PatientDetail() {
+  const navigate = useNavigate();
   const { state } = useLocation();
   const [logs, setLogs] = useState([]);
   const [treatments, setTreatments] = useState([]);
+  const [data, setData] = useState([]);
   const [patient, setPatient] = useState({
     name: "",
     last_name: "",
@@ -63,6 +65,7 @@ export default function PatientDetail() {
       const data = await response.data;
       setTreatments(data.treatments);
       setLogs(data.logs);
+      setData(data);
       const updatedData = Object.keys(data.data).reduce((acc, key) => {
         acc[key] =
           data.data[key] == null || data.data[key] == ""
@@ -76,6 +79,21 @@ export default function PatientDetail() {
 
     fetchPatientData();
   }, [state.id]);
+
+  // Delete
+  const handleDelete = async () => {
+    const patientId = state.id;
+
+    const response = await del(`/api/patient/${patientId}/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (!response.success) {
+      return <div>{response.data}</div>;
+    }
+    navigate("/dashboard/patients");
+  };
   // Pagination Part
   const {
     currentItems: logsItems,
@@ -88,7 +106,7 @@ export default function PatientDetail() {
   if (loading) return <p>Loading patient data...</p>;
   if (error) return <p>{error}</p>;
 
-  const Table_head_logs = ["Message", "User", "Created at", "Updated at"];
+  const Table_head_logs = ["Message"];
   return (
     <div className="container mx-auto p-8">
       {/* Patient Details Section */}
@@ -97,10 +115,13 @@ export default function PatientDetail() {
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
             Patient {state.id} Details
           </h2>
-          <Link to={`/dashboard/patient/${state.id}/edit`}>
+          <Link
+            to={`/dashboard/patients/edit/${state.id}`}
+            state={{ data: data }}
+          >
             <PencilIcon style={{ height: "20px" }} />
           </Link>
-          <Link to={`/dashboard/patient/${state.id}/delete`}>
+          <Link onClick={handleDelete}>
             <TrashIcon style={{ height: "20px" }} />
           </Link>
         </div>
@@ -237,33 +258,6 @@ export default function PatientDetail() {
                                 className="font-normal"
                               >
                                 {log.msg}
-                              </Typography>
-                            </td>
-                            <td className="p-4">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal"
-                              >
-                                {log.user}
-                              </Typography>
-                            </td>
-                            <td className="p-4">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal"
-                              >
-                                {log.created_at}
-                              </Typography>
-                            </td>
-                            <td className="p-4">
-                              <Typography
-                                variant="small"
-                                color="blue-gray"
-                                className="font-normal"
-                              >
-                                {log.updated_at}
                               </Typography>
                             </td>
                           </tr>
