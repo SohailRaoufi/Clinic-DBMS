@@ -3,3 +3,13 @@
   right: 0;
   top: 1rem;
 }
+.filter {
+  width: 10rem;
+  display: flex;
+  gap: 1rem;
+  text-wrap: nowrap;
+  position: absolute;
+  top: 1rem;
+  right: 22rem;
+  align-items: center;
+}

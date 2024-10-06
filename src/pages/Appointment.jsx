@@ -1,9 +1,8 @@
 import { NavbarSearch } from "../components/Navbar";
-import { CalendarIcon,PlusIcon } from "@heroicons/react/16/solid";
+import { CalendarIcon, PlusIcon } from "@heroicons/react/16/solid";
 import React, { useState, useEffect } from "react";
-import { get, post, del } from "../utils/ApiFetch";
-import { data } from "../components/test/TableData";
-import { Card, Typography, Button,Input } from "@material-tailwind/react";
+import { get, del } from "../utils/ApiFetch";
+import { Card, Typography, Button, Input } from "@material-tailwind/react";
 import Mypagination from "../components/MyPagination";
 
 import { Link } from "react-router-dom";
@@ -11,18 +10,17 @@ import "../assets/styles/appointment.css";
 
 export default function Appointment() {
   const [appointments, setAppointments] = useState([]);
-  const [date,setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  
 
   const headers = ["Day", "Time", "Patient"];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = appointments.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(appointments.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -34,7 +32,7 @@ export default function Appointment() {
     });
 
     if (response.success) {
-      setAppointments((prev) => prev.filter(a => a.id !== id));
+      setAppointments((prev) => prev.filter((a) => a.id !== id));
     } else {
       console.error("Could not delete the appointment");
     }
@@ -55,7 +53,6 @@ export default function Appointment() {
     };
     fetchAppointments();
   }, [date]);
-  
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
@@ -66,20 +63,16 @@ export default function Appointment() {
       <div className="flex-col table relative patient-table">
         <div className="table-head">
           <h1 className="head-text">All Appointments</h1>
-            <div className="flex items-center">
-            <div className="relative mr-4">
-              <Input
-                type="date"
-                value={date}
-                onChange={handleDateChange}
-                className="pr-10"
-              />
-            </div>
+          <div className="flex items-center">
+            <Typography className="filter">
+              Filter By Date:{" "}
+              <Input value={date} onChange={handleDateChange} type="date" />
+            </Typography>
+
             <Link to="/dashboard/appointment/add">
               <Button className="add-appointment">Add Appointment</Button>
             </Link>
-          </div> 
-
+          </div>
         </div>
         <div className="table-body">
           <div className="tab">
@@ -103,19 +96,19 @@ export default function Appointment() {
                           </Typography>
                         </th>
                       ))}
-                      <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal leading-none opacity-70"
-                        >
-                          Action
-                        </Typography>
-                      </th>
+                    <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal leading-none opacity-70"
+                      >
+                        Action
+                      </Typography>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {appointments.map((patient, index) => (
+                  {currentItems.map((patient, index) => (
                     <tr key={patient.id} className="even:bg-blue-gray-50/50">
                       {Object.keys(patient)
                         .filter((key) => key !== "id")

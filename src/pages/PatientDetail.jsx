@@ -102,11 +102,25 @@ export default function PatientDetail() {
     paginate,
   } = usePagination(logs);
 
+  const {
+    currentItems: treatmentItems,
+    totalPages: totalPagesTreatment,
+    currentPage: currentPageTreatment,
+    paginate: paginateTreatment,
+  } = usePagination(treatments);
+
   // Check if loading or error states
   if (loading) return <p>Loading patient data...</p>;
   if (error) return <p>{error}</p>;
 
+  console.log(treatments);
   const Table_head_logs = ["Message"];
+  const Table_head_treatment = [
+    "Type of Treatment",
+    "Amount",
+    "Teeths",
+    "Action",
+  ];
   return (
     <div className="container mx-auto p-8">
       {/* Patient Details Section */}
@@ -216,9 +230,6 @@ export default function PatientDetail() {
               <Tab key="treatment" value="treatment">
                 Treatment
               </Tab>
-              <Tab key="payment" value="payment">
-                Payment
-              </Tab>
             </TabsHeader>
             <TabsBody>
               <TabPanel key="logs" value="logs">
@@ -275,33 +286,78 @@ export default function PatientDetail() {
                 </div>
               </TabPanel>
               <TabPanel key="treatment" value="treatment">
-                treatment
-              </TabPanel>
-              <TabPanel key="payment" value="payment">
-                <Card className="mt-10 h-full w-full overflow-scroll">
-                  <table className="w-full min-w-max table-auto">
-                    <thead>
-                      <tr>
-                        <th>Treatment</th>
-                        <th>Amount</th>
-                        <th>Reminaing</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className=" text-center">
-                      <tr>
-                        <td>Extraction</td>
-                        <td>2000</td>
-                        <td>2000</td>
-                        <td className="p-4">
-                          <Link to={`/dashboard/patient/${state.id}/pay`}>
-                            <Button>Pay</Button>
-                          </Link>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </Card>
+                <div className="tab">
+                  <Card className="table-body h-full w-full overflow-scroll">
+                    <table className="w-full min-w-max table-auto text-left">
+                      <thead>
+                        <tr>
+                          {Table_head_treatment.filter(
+                            (head) => head != "id"
+                          ).map((head) => (
+                            <th
+                              key={head}
+                              className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+                            >
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal leading-none opacity-70"
+                              >
+                                {head}
+                              </Typography>
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {treatments.map((treat, index) => (
+                          <tr
+                            key={index + 1}
+                            className="even:bg-blue-gray-50/50"
+                          >
+                            <td className="p-4">
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
+                                {treat.type_of_treatment}
+                              </Typography>
+                            </td>
+                            <td className="p-4">
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
+                                {treat.amount}
+                              </Typography>
+                            </td>
+                            <td className="p-4">
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
+                                {treat.teeths}
+                              </Typography>
+                            </td>
+                            <td className="p-4">
+                              <Button>Pay</Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </Card>
+                  <div className="table-pag">
+                    <Mypagination
+                      totalPages={totalPagesTreatment}
+                      currentPage={currentPageTreatment}
+                      paginate={paginateTreatment}
+                    />
+                  </div>
+                </div>
               </TabPanel>
             </TabsBody>
           </Tabs>
