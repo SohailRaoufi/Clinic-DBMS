@@ -16,7 +16,7 @@ export default function Table({ Table_head, data, action }) {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
+  
   // Calculate total pages
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
@@ -67,8 +67,8 @@ export default function Table({ Table_head, data, action }) {
                     >
                       {patient[key]}
                     </Typography>
-                  </td>;
-                })}
+                  </td>
+                ))}
                 {Tabaction && (
                   <td className="">
                     <Link
