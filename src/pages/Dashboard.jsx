@@ -15,7 +15,7 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  const headers = ["Day", "Time", "Patient"];
+  const headers = ["Time", "Day", "Patient"];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -70,7 +70,7 @@ export default function Dashboard() {
       <div className="table">
         <div className="relative table-head">
           <h1>Appointments</h1>
-          <Typography className="filter">
+          <Typography className="filter-dash">
             Filter By Date:{" "}
             <Input value={date} onChange={handleDateChange} type="date" />
           </Typography>

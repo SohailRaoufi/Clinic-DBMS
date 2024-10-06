@@ -14,7 +14,7 @@ export default function Appointment() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  const headers = ["Day", "Time", "Patient"];
+  const headers = ["Time", "Day", "Patient"];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
