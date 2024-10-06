@@ -16,7 +16,7 @@ export default function Table({ Table_head, data, action }) {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
+  
   // Calculate total pages
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
@@ -58,7 +58,7 @@ export default function Table({ Table_head, data, action }) {
           <tbody>
             {currentItems.map((patient, index) => (
               <tr key={patient.id} className="even:bg-blue-gray-50/50">
-                {Object.keys(patient).map((key) => {
+                {Object.keys(patient).filter(key => key !== "id" ).map((key) => (
                   <td key={key} className="p-4">
                     <Typography
                       variant="small"
@@ -67,8 +67,8 @@ export default function Table({ Table_head, data, action }) {
                     >
                       {patient[key]}
                     </Typography>
-                  </td>;
-                })}
+                  </td>
+                ))}
                 {Tabaction && (
                   <td className="">
                     <Link
