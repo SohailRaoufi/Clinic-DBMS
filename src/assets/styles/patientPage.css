@@ -20,7 +20,7 @@
   font-weight: 700;
 }
 .patient-btn {
-  position: absolute;
+  position: absolute !important;
   right: 0;
   top: 1.3rem;
   display: flex;

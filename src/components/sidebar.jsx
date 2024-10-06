@@ -16,6 +16,9 @@ import {
   UserCircleIcon,
   Cog6ToothIcon,
   PowerIcon,
+  ChatBubbleLeftRightIcon,
+  ClockIcon,
+  UsersIcon,
 } from "@heroicons/react/24/solid";
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
@@ -61,56 +64,70 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion
-          open={open === 2}
-          icon={
-            <ChevronDownIcon
-              strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${
-                open === 2 ? "rotate-180" : ""
-              }`}
-            />
-          }
-        >
-          <ListItem className="p-0" selected={open === 2}>
-            <AccordionHeader
-              onClick={() => handleOpen(2)}
-              className="border-b-0 p-3"
-            >
-              <ListItemPrefix>
-                <ShoppingBagIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              <Typography color="blue-gray" className="mr-auto font-normal">
-                Patient
-              </Typography>
-            </AccordionHeader>
-          </ListItem>
-          <AccordionBody className="py-1">
-            <List className="p-0">
-              <Link to="/dashboard/patients">
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Patients
-                </ListItem>
-              </Link>
-              <Link to="/dashboard/appointments">
-                <ListItem>
-                  <ListItemPrefix>
-                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                  </ListItemPrefix>
-                  Appointment
-                </ListItem>
-              </Link>
-              <ListItem>
+        <Accordion>
+          <Link to="/dashboard/patients">
+            <ListItem className="p-0" selected={open === 2}>
+              <AccordionHeader
+                onClick={() => handleOpen(2)}
+                className="border-b-0 p-3"
+              >
                 <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                  <ShoppingBagIcon className="h-5 w-5" />
                 </ListItemPrefix>
-                Payment
-              </ListItem>
-            </List>
-          </AccordionBody>
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  Patient
+                </Typography>
+              </AccordionHeader>
+            </ListItem>
+          </Link>
+        </Accordion>
+        <Accordion>
+          <Link to="/dashboard/appointments">
+            <ListItem className="p-0" selected={open === 3}>
+              <AccordionHeader
+                onClick={() => handleOpen(3)}
+                className="border-b-0 p-3"
+              >
+                <ListItemPrefix>
+                  <ClockIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  Appointment
+                </Typography>
+              </AccordionHeader>
+            </ListItem>
+          </Link>
+        </Accordion>
+        <Accordion>
+          <Link to="/dashboard/chat">
+            <ListItem className="p-0" selected={open === 4}>
+              <AccordionHeader
+                onClick={() => handleOpen(4)}
+                className="border-b-0 p-3"
+              >
+                <ListItemPrefix>
+                  <ChatBubbleLeftRightIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  Chat
+                </Typography>
+              </AccordionHeader>
+            </ListItem>
+          </Link>
+        </Accordion>
+        <Accordion>
+          <Link to="/dashboard/staff">
+            <ListItem className="p-0" selected={open === 5}>
+              <AccordionHeader selected={open === 5} className="border-b-0 p-3">
+                <ListItemPrefix>
+                  <UsersIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  Staff
+                </Typography>
+              </AccordionHeader>
+            </ListItem>
+          </Link>
         </Accordion>
         <hr className="my-2 border-blue-gray-50" />
         <div>
