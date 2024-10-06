@@ -57,8 +57,8 @@ export default function Table({ Table_head, data, action }) {
           </thead>
           <tbody>
             {currentItems.map((patient, index) => (
-              <tr key={patient.id} className="even:bg-blue-gray-50/50">
-                {Object.keys(patient).filter(key => key !== "id" ).map((key) => (
+              <tr key={index + 1} className="even:bg-blue-gray-50/50">
+                {Object.keys(patient).map((key) => {
                   <td key={key} className="p-4">
                     <Typography
                       variant="small"

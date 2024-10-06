@@ -48,6 +48,10 @@ const router = createBrowserRouter([
             element: <AddPatient />,
           },
           {
+            path: "/dashboard/patients/edit/:id",
+            element: <AddPatient isEditing={true} />,
+          },
+          {
             path: "/dashboard/patients/:id",
             element: <PatientDetail />,
           },

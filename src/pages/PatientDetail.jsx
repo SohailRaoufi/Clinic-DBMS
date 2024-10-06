@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import usePagination from "../components/usePagination";
+import Mypagination from "../components/MyPagination";
 
 import "../assets/styles/patientdetail.css";
 import {
@@ -12,16 +14,17 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-import { PlusIcon } from "@heroicons/react/24/outline";
 
-import data from "../components/test/LogsData";
-import Table from "../components/Table";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import { get } from "../utils/ApiFetch";
+import { get, del } from "../utils/ApiFetch";
 
 export default function PatientDetail() {
+  const navigate = useNavigate();
   const { state } = useLocation();
-
+  const [logs, setLogs] = useState([]);
+  const [treatments, setTreatments] = useState([]);
+  const [data, setData] = useState([]);
   const [patient, setPatient] = useState({
     name: "",
     last_name: "",
@@ -38,54 +41,90 @@ export default function PatientDetail() {
     diabetes: null,
     reflux: null,
     notes: "",
-  }); // Initialize as null for loading state
-  const [loading, setLoading] = useState(true); // Add loading state
-  const [error, setError] = useState(null); // Add error state
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // useEffect hook to fetch patient data from the server
   useEffect(() => {
     const fetchPatientData = async () => {
-      try {
-        // Assuming you get a patient ID from the state or params
-        const patientId = state?.patient.id || "default-id"; // Replace with actual logic for fetching ID
+      const patientId = state.id;
 
-        // Fetch data from the server using the native fetch API
-        const response = await get(`/api/patient/${patientId}`, {
-          Headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+      const response = await get(`/api/patient/${patientId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
-
-        const data = await response.json(); // Parse the JSON response
-        setPatient(data); // Update the patient state with the fetched data
-        setLoading(false); // Set loading to false after the data is fetched
-      } catch (err) {
-        console.error("Failed to fetch patient data:", err);
+      if (!response.success) {
+        console.log(response.data);
         setError("Failed to fetch patient data");
         setLoading(false);
+        return;
       }
+
+      const data = await response.data;
+      setTreatments(data.treatments);
+      setLogs(data.logs);
+      setData(data);
+      const updatedData = Object.keys(data.data).reduce((acc, key) => {
+        acc[key] =
+          data.data[key] == null || data.data[key] == ""
+            ? "N/A"
+            : data.data[key];
+        return acc;
+      }, {});
+      setPatient(updatedData);
+      setLoading(false);
     };
 
     fetchPatientData();
-  }, [state?.patientId]); // Depend on patientId or any necessary state
+  }, [state.id]);
+
+  // Delete
+  const handleDelete = async () => {
+    const patientId = state.id;
+
+    const response = await del(`/api/patient/${patientId}/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (!response.success) {
+      return <div>{response.data}</div>;
+    }
+    navigate("/dashboard/patients");
+  };
+  // Pagination Part
+  const {
+    currentItems: logsItems,
+    totalPages,
+    currentPage,
+    paginate,
+  } = usePagination(logs);
 
   // Check if loading or error states
   if (loading) return <p>Loading patient data...</p>;
   if (error) return <p>{error}</p>;
 
-  // Table head is derived from patient data once it's available
-  const Table_head = patient ? Object.keys(patient) : [];
+  const Table_head_logs = ["Message"];
   return (
     <div className="container mx-auto p-8">
       {/* Patient Details Section */}
       <div className="box1 bg-whit p-6 mb-12">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">
-          Patient {state.patient.id} Details
-        </h2>
+        <div className="flex items-center  gap-4">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">
+            Patient {state.id} Details
+          </h2>
+          <Link
+            to={`/dashboard/patients/edit/${state.id}`}
+            state={{ data: data }}
+          >
+            <PencilIcon style={{ height: "20px" }} />
+          </Link>
+          <Link onClick={handleDelete}>
+            <TrashIcon style={{ height: "20px" }} />
+          </Link>
+        </div>
 
         <div className="pateint-grid gap-x-8 gap-y-6">
           {/* Name */}
@@ -183,10 +222,60 @@ export default function PatientDetail() {
             </TabsHeader>
             <TabsBody>
               <TabPanel key="logs" value="logs">
-                <Table Table_head={Table_head} data={data} action={false} />
+                <div className="tab">
+                  <Card className="table-body h-full w-full overflow-scroll">
+                    <table className="w-full min-w-max table-auto text-left">
+                      <thead>
+                        <tr>
+                          {Table_head_logs.filter((head) => head != "id").map(
+                            (head) => (
+                              <th
+                                key={head}
+                                className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
+                              >
+                                <Typography
+                                  variant="small"
+                                  color="blue-gray"
+                                  className="font-normal leading-none opacity-70"
+                                >
+                                  {head}
+                                </Typography>
+                              </th>
+                            )
+                          )}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {logsItems.map((log, index) => (
+                          <tr
+                            key={index + 1}
+                            className="even:bg-blue-gray-50/50"
+                          >
+                            <td className="p-4">
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
+                                {log.msg}
+                              </Typography>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </Card>
+                  <div className="table-pag">
+                    <Mypagination
+                      totalPages={totalPages}
+                      currentPage={currentPage}
+                      paginate={paginate}
+                    />
+                  </div>
+                </div>
               </TabPanel>
               <TabPanel key="treatment" value="treatment">
-                <Table Table_head={Table_head} data={data} action={false} />
+                treatment
               </TabPanel>
               <TabPanel key="payment" value="payment">
                 <Card className="mt-10 h-full w-full overflow-scroll">
@@ -205,21 +294,7 @@ export default function PatientDetail() {
                         <td>2000</td>
                         <td>2000</td>
                         <td className="p-4">
-                          <Link
-                            to={`/dashboard/patient/${state.patient.id}/pay`}
-                          >
-                            <Button>Pay</Button>
-                          </Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Extraction</td>
-                        <td>2000</td>
-                        <td>2000</td>
-                        <td className="p-4">
-                          <Link
-                            to={`/dashboard/patient/${state.patient.id}/pay`}
-                          >
+                          <Link to={`/dashboard/patient/${state.id}/pay`}>
                             <Button>Pay</Button>
                           </Link>
                         </td>

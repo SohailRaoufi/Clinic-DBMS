@@ -15,22 +15,30 @@ import {
 } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { post, put } from "../utils/ApiFetch";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import OperationOptionsTable from "../components/Chart";
 import ToothChart from "../components/ToothChart";
 import json from "../utils/DataObjects.json";
 
 import "../assets/styles/addpatient.css";
-export default function AddPatient() {
+export default function AddPatient({ isEditing = false }) {
+  const location = useLocation();
+  const data = location.state?.data || [];
+  console.log(location);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
+  const [formError, setFormError] = useState();
+
+  const navigate = useNavigate();
 
   const handleOpen = () => setOpen(!open);
 
-  const [treatments, setTreatments] = useState([]);
+  const [treatments, setTreatments] = useState(data.treatments);
   const [newTreatment, setNewTreatment] = useState({
-    name: "",
+    type_of_treatment: "",
     teeths: "",
     amount: "0",
     amount_paid: "0",
@@ -59,7 +67,7 @@ export default function AddPatient() {
     const new_treatment = {
       ...newTreatment,
       teeths: get_teeths_from_graph(teethGraph),
-      name: selectedOps[0],
+      type_of_treatment: selectedOps[0],
     };
 
     if (
@@ -73,7 +81,12 @@ export default function AddPatient() {
     } else {
       setError("");
       setTreatments([...treatments, new_treatment]);
-      setNewTreatment({ name: "", teeths: "", amount: "0", amount_paid: "0" });
+      setNewTreatment({
+        type_of_treatment: "",
+        teeths: "",
+        amount: "0",
+        amount_paid: "0",
+      });
       setSelectedOps([]);
       updateTeethGraph(teethStateGraph);
       setOpen(false);
@@ -81,13 +94,11 @@ export default function AddPatient() {
   };
 
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    console.error(name);
-    console.error(value);
-    console.error(type);
+    const { name, value, type, checked } = e.target;
+
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? value : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -109,11 +120,11 @@ export default function AddPatient() {
     notes: "",
   });
 
-  const text_fields = ["name", "last_name", "address", "job", "phone"];
+  const text_fields = ["name", "last_name", "addr", "job", "phone_no"];
   const checkbox_fields = [
-    "hiv",
-    "hcv",
-    "hbs",
+    "HIV",
+    "HCV",
+    "HBS",
     "pregnancy",
     "diabaetes",
     "reflux",
@@ -125,33 +136,67 @@ export default function AddPatient() {
     treatments.forEach((a, index) => {
       treats[index] = a; // Assign each treatment to the `treats` object with the index as key
     });
+
+    if (treats == {}) {
+      setFormError({ add_treatment: "Please Add a Treatmetnt!" });
+      return;
+    }
     const response_data = {
       ...formData,
       treatments: {
         ...treats,
       },
     };
-    const response = await post("/api/patient/", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: response_data,
-    });
+    if (isEditing) {
+      const response = await put(`/api/patient/${data.data.id}/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: response_data,
+      });
+      if (!response.success) {
+        setFormError(response.data);
+        console.log(response);
 
-    if (!response.success) {
-      console.log(response_data);
-      return;
+        return;
+      }
+    } else {
+      const response = await post("/api/patient/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: response_data,
+      });
+      if (!response.success) {
+        setFormError(response.data);
+        console.log(response);
+
+        return;
+      }
     }
 
-    navigate("/home");
+    navigate("/dashboard/patients");
   };
+
+  useEffect(() => {
+    if (isEditing) {
+      setFormData(data.data);
+    }
+  }, [isEditing, data]);
 
   return (
     <div className="h-screen">
       <div className="h-10 p-5">
         <Typography variant="h4" color="blue-gray">
-          Add Patient
+          {isEditing ? "Edit Patient" : "Add Patient"}
         </Typography>
+        {formError && (
+          <Typography color="red">
+            {Object.keys(formError).map((key) => {
+              return formError[key];
+            })}
+          </Typography>
+        )}
       </div>
       <div className="form">
         <div className="form-body">
@@ -167,11 +212,13 @@ export default function AddPatient() {
                       {field.charAt(0).toUpperCase() + field.slice(1)}
                     </Typography>
                     <Input
+                      onChange={handleChange}
                       color="teal"
                       type="text"
                       label={field}
                       name={field}
                       key={field}
+                      value={formData[field]}
                       required
                     />
                   </div>
@@ -180,17 +227,22 @@ export default function AddPatient() {
                 <div>
                   <Typography>Age</Typography>
                   <Input
+                    onChange={handleChange}
+                    name="age"
                     color="teal"
                     type="number"
                     min="0"
                     max="100"
+                    value={formData.age}
                     required
                   />
                 </div>
                 <div>
                   <Typography>Gender</Typography>
                   <select
+                    onChange={handleChange}
                     name="gender"
+                    value={formData.gender}
                     required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   >
@@ -202,6 +254,8 @@ export default function AddPatient() {
                 <div>
                   <Typography>Marital Status</Typography>
                   <select
+                    onChange={handleChange}
+                    value={formData.martial_status}
                     name="martial_status"
                     required
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -214,20 +268,29 @@ export default function AddPatient() {
 
                 {checkbox_fields.map((field) => (
                   <div>
-                    <Checkbox label={field.toUpperCase()} />
+                    <Checkbox
+                      onChange={handleChange}
+                      label={field.toUpperCase()}
+                      name={field}
+                      value={formData[field]}
+                    />
                   </div>
                 ))}
 
                 <div className="column-span-2">
                   <Typography>Notes</Typography>
                   <textarea
+                    onChange={handleChange}
                     placeholder="Notes"
-                    name="observation"
+                    value={formData.notes}
+                    name="notes"
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   />
                 </div>
                 <div className="column-span-2">
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit">
+                    {isEditing ? "Update" : "Submit"}
+                  </Button>
                 </div>
               </div>
             </form>
@@ -248,7 +311,7 @@ export default function AddPatient() {
               treatments.map((treatment, index) => (
                 <li key={index} className="mb-2 p-2 bg-white rounded shadow">
                   <p>
-                    <strong>Name:</strong> {treatment.name}
+                    <strong>Name:</strong> {treatment.type_of_treatment}
                   </p>
                   <p>
                     <strong>Amount:</strong> {treatment.amount}

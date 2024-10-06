@@ -64,7 +64,7 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion>
+        <Accordion open={open === 2}>
           <Link to="/dashboard/patients">
             <ListItem className="p-0" selected={open === 2}>
               <AccordionHeader
@@ -81,7 +81,7 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion>
+        <Accordion open={open === 3}>
           <Link to="/dashboard/appointments">
             <ListItem className="p-0" selected={open === 3}>
               <AccordionHeader
@@ -98,7 +98,7 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion>
+        <Accordion open={open === 4}>
           <Link to="/dashboard/chat">
             <ListItem className="p-0" selected={open === 4}>
               <AccordionHeader
@@ -115,7 +115,7 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion>
+        <Accordion open={open === 5}>
           <Link to="/dashboard/staff">
             <ListItem className="p-0" selected={open === 5}>
               <AccordionHeader selected={open === 5} className="border-b-0 p-3">
