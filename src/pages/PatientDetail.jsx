@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import usePagination from "../components/usePagination";
 import Mypagination from "../components/MyPagination";
+import AddTreatmentModal from "../components/Treatment";
+import json from "../utils/DataObjects.json";
 
 import "../assets/styles/patientdetail.css";
 import {
@@ -17,7 +19,7 @@ import {
 
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import { get, del } from "../utils/ApiFetch";
+import { get, del, put, post } from "../utils/ApiFetch";
 
 export default function PatientDetail() {
   const navigate = useNavigate();
@@ -44,6 +46,21 @@ export default function PatientDetail() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [newTreatment, setNewTreatment] = useState({
+    type_of_treatment: "",
+    teeths: "",
+    amount: "0",
+    paid: "0",
+  });
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(!open);
+
+  const [selectedOps, setSelectedOps] = useState([]);
+
+  const teethStateGraph = json.TeethStateGraph;
+  //  the state of the teeth graph
+  const [teethGraph, updateTeethGraph] = useState(teethStateGraph);
 
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -78,7 +95,7 @@ export default function PatientDetail() {
     };
 
     fetchPatientData();
-  }, [state.id]);
+  }, [state?.id]);
 
   // Delete
   const handleDelete = async () => {
@@ -113,7 +130,6 @@ export default function PatientDetail() {
   if (loading) return <p>Loading patient data...</p>;
   if (error) return <p>{error}</p>;
 
-  console.log(treatments);
   const Table_head_logs = ["Message"];
   const Table_head_treatment = [
     "Type of Treatment",
@@ -121,16 +137,101 @@ export default function PatientDetail() {
     "Teeths",
     "Action",
   ];
+
+  // Hanlde Treatment Update:
+  const selectTeeth = (teeth) => {
+    // taking the id of the target tooth
+    let toothState = teeth.target.id;
+    // setting the state of the tooth to it's opposite
+    updateTeethGraph({ ...teethGraph, [toothState]: !teethGraph[toothState] });
+    // setNewTreatment((item) => )
+  };
+
+  const handleOpen = (treatment = null) => {
+    if (treatment) {
+      // Populate modal with selected treatment data
+      setNewTreatment(treatment);
+      setSelectedOps([treatment.type_of_treatment]);
+      updateTeethGraph((prevTeethGraph) => {
+        const updatedGraph = { ...prevTeethGraph };
+        const selectedTeeths = treatment.teeths.split(",").filter(Boolean);
+        selectedTeeths.forEach((toothId) => {
+          updatedGraph[toothId] = true;
+        });
+        return updatedGraph;
+      });
+    }
+    setOpen(!open); // Open the modal
+  };
+  const get_teeths_from_graph = (teeths) => {
+    return Object.keys(teeths)
+      .filter((key) => teeths[key] === true)
+      .join(",");
+  };
+  const handleAddTreatment = () => {
+    const new_treatment = {
+      ...newTreatment,
+      teeths: get_teeths_from_graph(teethGraph),
+      type_of_treatment: selectedOps[0],
+    };
+
+    if (
+      new_treatment.amount === "0" ||
+      Math.sign(new_treatment.amount) == -1 ||
+      new_treatment.name === ""
+    ) {
+      setError(
+        "Please Ensure you have Choosen the Treatement and added the Correct Amount!"
+      );
+    } else {
+      setError("");
+
+      const updatedTreatments = treatments.map((val) => {
+        if (val.id == new_treatment.id) {
+          return new_treatment;
+        }
+        return val;
+      });
+      handleUpdate(new_treatment);
+      setTreatments(updatedTreatments);
+
+      setNewTreatment({
+        type_of_treatment: "",
+        teeths: "",
+        amount: "0",
+        amount_paid: "0",
+      });
+      setSelectedOps([]);
+      updateTeethGraph(teethStateGraph);
+      setOpen(false);
+    }
+  };
+
+  const handleUpdate = async (new_treatment) => {
+    const newResponse = await put(`/api/treatment/${data.data.id}/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: new_treatment,
+    });
+
+    if (!newResponse.success) {
+      console.log(newResponse);
+
+      return;
+    }
+  };
+
   return (
     <div className="container mx-auto p-8">
       {/* Patient Details Section */}
       <div className="box1 bg-whit p-6 mb-12">
         <div className="flex items-center  gap-4">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
-            Patient {state.id} Details
+            Patient {state?.id} Details
           </h2>
           <Link
-            to={`/dashboard/patients/edit/${state.id}`}
+            to={`/dashboard/patients/edit/${state?.id}`}
             state={{ data: data }}
           >
             <PencilIcon style={{ height: "20px" }} />
@@ -343,7 +444,9 @@ export default function PatientDetail() {
                               </Typography>
                             </td>
                             <td className="p-4">
-                              <Button>Pay</Button>
+                              <Button onClick={() => handleOpen(treat)}>
+                                Edit
+                              </Button>
                             </td>
                           </tr>
                         ))}
@@ -357,6 +460,20 @@ export default function PatientDetail() {
                       paginate={paginateTreatment}
                     />
                   </div>
+                  <AddTreatmentModal
+                    mode={"edit"}
+                    open={open}
+                    handleOpen={handleClose}
+                    newTreatment={newTreatment}
+                    setNewTreatment={setNewTreatment}
+                    selectedOps={selectedOps}
+                    setSelectedOps={setSelectedOps}
+                    teethGraph={teethGraph}
+                    updateTeethGraph={updateTeethGraph}
+                    selectTeeth={selectTeeth}
+                    handleAddTreatment={handleAddTreatment}
+                    error={error}
+                  />
                 </div>
               </TabPanel>
             </TabsBody>
