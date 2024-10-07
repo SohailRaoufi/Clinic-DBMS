@@ -11,6 +11,9 @@ import AddPatient from "./pages/AddPatient";
 import Appointment from "./pages/Appointment";
 import PatientDetail from "./pages/PatientDetail";
 import AddAppointment from "./pages/AddAppointmnet";
+import Staff from "./pages/Staff";
+import AddStaff from "./pages/AddStaff";
+import StaffDetail from "./pages/StaffDetail";
 
 import Auth from "./pages/Auth";
 import PrivateRoute from "./utils/PrivateRouter";
@@ -62,6 +65,22 @@ const router = createBrowserRouter([
           {
             path: "/dashboard/appointment/add",
             element: <AddAppointment />,
+          },
+          {
+            path: "/dashboard/staff",
+            element: <Staff />,
+          },
+          {
+            path: "/dashboard/staff/add",
+            element: <AddStaff />,
+          },
+          {
+            path: "/dashboard/staff/:id",
+            element: <StaffDetail />,
+          },
+          {
+            path: "/dashboard/staff/edit/:id",
+            element: <AddStaff isEditing={true} />,
           },
         ],
       },
