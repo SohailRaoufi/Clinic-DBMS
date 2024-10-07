@@ -26,6 +26,7 @@ export default function PatientDetail() {
   const { state } = useLocation();
   const [logs, setLogs] = useState([]);
   const [treatments, setTreatments] = useState([]);
+  const [remainingAmount, setRemainingAmount] = useState(0);
   const [data, setData] = useState([]);
   const [patient, setPatient] = useState({
     name: "",
@@ -134,6 +135,7 @@ export default function PatientDetail() {
   const Table_head_treatment = [
     "Type of Treatment",
     "Amount",
+    "Remaining Amount",
     "Teeths",
     "Action",
   ];
@@ -199,7 +201,7 @@ export default function PatientDetail() {
         type_of_treatment: "",
         teeths: "",
         amount: "0",
-        amount_paid: "0",
+        paid: "0",
       });
       setSelectedOps([]);
       updateTeethGraph(teethStateGraph);
@@ -208,7 +210,8 @@ export default function PatientDetail() {
   };
 
   const handleUpdate = async (new_treatment) => {
-    const newResponse = await put(`/api/treatment/${data.data.id}/`, {
+    console.log(new_treatment);
+    const newResponse = await put(`/api/treatment/${new_treatment.id}/`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -219,6 +222,24 @@ export default function PatientDetail() {
       console.log(newResponse);
 
       return;
+    }
+
+    if (new_treatment.paid != "") {
+      const PayResponse = await post(
+        `/api/treatment/${new_treatment.id}/pay/`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: { paid: new_treatment.paid },
+        }
+      );
+
+      if (!PayResponse.success) {
+        console.log(PayResponse.data);
+
+        return;
+      }
     }
   };
 
@@ -432,6 +453,15 @@ export default function PatientDetail() {
                                 className="font-normal"
                               >
                                 {treat.amount}
+                              </Typography>
+                            </td>
+                            <td className="p-4">
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
+                                {treat.real_amount}
                               </Typography>
                             </td>
                             <td className="p-4">
