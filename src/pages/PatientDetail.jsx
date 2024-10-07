@@ -19,7 +19,7 @@ import {
 
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
-import { get, del, put } from "../utils/ApiFetch";
+import { get, del, put, post } from "../utils/ApiFetch";
 
 export default function PatientDetail() {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ export default function PatientDetail() {
     type_of_treatment: "",
     teeths: "",
     amount: "0",
-    amount_paid: "0",
+    paid: "0",
   });
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(!open);
@@ -95,7 +95,7 @@ export default function PatientDetail() {
     };
 
     fetchPatientData();
-  }, [state.id]);
+  }, [state?.id]);
 
   // Delete
   const handleDelete = async () => {
@@ -186,8 +186,14 @@ export default function PatientDetail() {
     } else {
       setError("");
 
-      console.log(treatments);
-      handleUpdate();
+      const updatedTreatments = treatments.map((val) => {
+        if (val.id == new_treatment.id) {
+          return new_treatment;
+        }
+        return val;
+      });
+      handleUpdate(new_treatment);
+      setTreatments(updatedTreatments);
 
       setNewTreatment({
         type_of_treatment: "",
@@ -201,21 +207,12 @@ export default function PatientDetail() {
     }
   };
 
-  const handleUpdate = async () => {
-    const treats = {};
-    treatments.forEach((a, index) => {
-      treats[index] = a; // Assign each treatment to the `treats` object with the index as key
-    });
-    const treat_response_data = {
-      treatments: {
-        ...treats,
-      },
-    };
+  const handleUpdate = async (new_treatment) => {
     const newResponse = await put(`/api/treatment/${data.data.id}/`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: treat_response_data,
+      body: new_treatment,
     });
 
     if (!newResponse.success) {
@@ -231,10 +228,10 @@ export default function PatientDetail() {
       <div className="box1 bg-whit p-6 mb-12">
         <div className="flex items-center  gap-4">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
-            Patient {state.id} Details
+            Patient {state?.id} Details
           </h2>
           <Link
-            to={`/dashboard/patients/edit/${state.id}`}
+            to={`/dashboard/patients/edit/${state?.id}`}
             state={{ data: data }}
           >
             <PencilIcon style={{ height: "20px" }} />
