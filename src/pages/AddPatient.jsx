@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogFooter,
 } from "@material-tailwind/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { useState, useEffect } from "react";
 import { post, put } from "../utils/ApiFetch";
@@ -200,6 +200,11 @@ export default function AddPatient({ isEditing = false }) {
     navigate("/dashboard/patients");
   };
 
+  // Detele Treatment
+  const handleDeteleTreatment = (index) => {
+    setTreatments((prev) => prev.filter((_, i) => i != index));
+  };
+
   useEffect(() => {
     if (isEditing) {
       setFormData(data.data);
@@ -355,6 +360,13 @@ export default function AddPatient({ isEditing = false }) {
                   </p>
                   <p>
                     <strong>Amount:</strong> {treatment.amount}
+                  </p>
+                  <p>
+                    <TrashIcon
+                      className=" cursor-pointer"
+                      onClick={() => handleDeteleTreatment(index)}
+                      style={{ height: "20px" }}
+                    />
                   </p>
                 </li>
               ))
