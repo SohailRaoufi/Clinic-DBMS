@@ -26,7 +26,6 @@ export default function PatientDetail() {
   const { state } = useLocation();
   const [logs, setLogs] = useState([]);
   const [treatments, setTreatments] = useState([]);
-  const [remainingAmount, setRemainingAmount] = useState(0);
   const [data, setData] = useState([]);
   const [patient, setPatient] = useState({
     name: "",
@@ -47,6 +46,7 @@ export default function PatientDetail() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [formError, setFormError] = useState("");
 
   const [newTreatment, setNewTreatment] = useState({
     type_of_treatment: "",
@@ -182,35 +182,33 @@ export default function PatientDetail() {
       Math.sign(new_treatment.amount) == -1 ||
       new_treatment.name === ""
     ) {
-      setError(
+      setFormError(
         "Please Ensure you have Choosen the Treatement and added the Correct Amount!"
       );
     } else {
-      setError("");
-
+      setFormError("");
+      console.log(new_treatment);
+      handleUpdate(new_treatment);
       const updatedTreatments = treatments.map((val) => {
-        if (val.id == new_treatment.id) {
+        if (val.id === new_treatment.id) {
+          if (!new_treatment.paid) {
+            new_treatment.paid = "0";
+          }
+          const newAmount = new_treatment.real_amount - new_treatment.paid;
+
+          new_treatment.real_amount = newAmount;
+          setFormError("");
           return new_treatment;
         }
         return val;
       });
-      handleUpdate(new_treatment);
       setTreatments(updatedTreatments);
 
-      setNewTreatment({
-        type_of_treatment: "",
-        teeths: "",
-        amount: "0",
-        paid: "0",
-      });
-      setSelectedOps([]);
-      updateTeethGraph(teethStateGraph);
       setOpen(false);
     }
   };
 
   const handleUpdate = async (new_treatment) => {
-    console.log(new_treatment);
     const newResponse = await put(`/api/treatment/${new_treatment.id}/`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -236,10 +234,13 @@ export default function PatientDetail() {
       );
 
       if (!PayResponse.success) {
+        setFormError(PayResponse.data["wrong amount"]);
+        setOpen(true);
         console.log(PayResponse.data);
 
         return;
       }
+      setFormError("");
     }
   };
 
@@ -502,7 +503,7 @@ export default function PatientDetail() {
                     updateTeethGraph={updateTeethGraph}
                     selectTeeth={selectTeeth}
                     handleAddTreatment={handleAddTreatment}
-                    error={error}
+                    error={formError}
                   />
                 </div>
               </TabPanel>
