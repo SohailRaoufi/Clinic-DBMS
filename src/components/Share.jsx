@@ -53,11 +53,11 @@ const ShareDialog = ({ open, handleOpen, id }) => {
     setShareData(data);
 
     try {
-      const response = await post("api/chats", {
+      const response = await post("/api/chats/", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: shareData,
+        body: data,
       });
 
       if (!response.success) {

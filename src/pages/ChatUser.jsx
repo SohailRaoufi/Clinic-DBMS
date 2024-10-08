@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -108,6 +108,30 @@ const ChatInterface = () => {
                 {fileLink[fileLink.length - 1]}
               </a>
             </Typography>
+          </div>
+        </div>
+      );
+    } else if (message.type === "share") {
+      return (
+        <div
+          key={message.id}
+          className={`flex ${
+            message.sender === state?.id ? "justify-start" : "justify-end"
+          } mb-2`}
+        >
+          <div
+            className={`p-3 rounded-lg max-w-xs ${
+              message.sender === state?.id
+                ? "bg-green-500 text-white"
+                : "bg-green-500 text-white"
+            }`}
+          >
+            <Link
+              to={`/dashboard/patients/${message.text}`}
+              state={{ id: message.text }}
+            >
+              Patient Link
+            </Link>
           </div>
         </div>
       );
