@@ -5,6 +5,8 @@ import Mypagination from "../components/MyPagination";
 import AddTreatmentModal from "../components/Treatment";
 import json from "../utils/DataObjects.json";
 
+import Share from "../components/Share";
+
 import "../assets/styles/patientdetail.css";
 import {
   Button,
@@ -62,6 +64,10 @@ export default function PatientDetail() {
   const teethStateGraph = json.TeethStateGraph;
   //  the state of the teeth graph
   const [teethGraph, updateTeethGraph] = useState(teethStateGraph);
+
+  // Share Modal
+  const [openShare, setOpenShare] = useState(false);
+  const handleOpenShare = () => setOpenShare(!openShare);
 
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -262,10 +268,13 @@ export default function PatientDetail() {
           <Link onClick={handleDelete}>
             <TrashIcon style={{ height: "20px" }} />
           </Link>
-          <Link onClick={handleDelete}>
-            <ShareIcon style={{ height: "20px" }} />
-          </Link>
+
+          <ShareIcon onClick={handleOpenShare} style={{ height: "20px" }} />
         </div>
+
+        {openShare && (
+          <Share handleOpen={handleOpenShare} open={openShare} id={state?.id} />
+        )}
 
         <div className="pateint-grid gap-x-8 gap-y-6">
           {/* Name */}
