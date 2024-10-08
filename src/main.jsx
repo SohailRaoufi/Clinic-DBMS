@@ -14,6 +14,8 @@ import AddAppointment from "./pages/AddAppointmnet";
 import Staff from "./pages/Staff";
 import AddStaff from "./pages/AddStaff";
 import StaffDetail from "./pages/StaffDetail";
+import Chat from "./pages/Chat";
+import ChatUser from "./pages/ChatUser";
 
 import Auth from "./pages/Auth";
 import PrivateRoute from "./utils/PrivateRouter";
@@ -66,6 +68,14 @@ const router = createBrowserRouter([
           {
             path: "/dashboard/appointment/add",
             element: <AddAppointment />,
+          },
+          {
+            path: "/dashboard/chat",
+            element: <Chat />,
+          },
+          {
+            path: "/dashboard/chat/:id",
+            element: <ChatUser />,
           },
           {
             element: <AdminOnlyAllowed />,
