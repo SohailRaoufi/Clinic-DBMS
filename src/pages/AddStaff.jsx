@@ -59,8 +59,10 @@ export default function AddStaff({ isEditing = false }) {
   };
 
   useEffect(() => {
-    setFormData(data);
-  }, [isEditing, data]);
+    if (isEditing) {
+      setFormData(data);
+    }
+  }, [data]);
 
   return (
     <div className="add-appointmnet">
