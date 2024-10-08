@@ -21,6 +21,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/solid";
 import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { jwtDecode } from "jwt-decode";
 
 import "./styles/sidebar.css";
 
@@ -29,6 +30,8 @@ import { useNavigate } from "react-router-dom";
 
 export function NavbarSimple() {
   const [open, setOpen] = React.useState(0);
+
+  const user = jwtDecode(localStorage.getItem("token"));
 
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
@@ -115,34 +118,44 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion open={open === 5}>
-          <Link to="/dashboard/staff">
-            <ListItem className="p-0" selected={open === 5}>
-              <AccordionHeader selected={open === 5} className="border-b-0 p-3">
-                <ListItemPrefix>
-                  <UsersIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
-                  Staff
-                </Typography>
-              </AccordionHeader>
-            </ListItem>
-          </Link>
-        </Accordion>
-        <hr className="my-2 border-blue-gray-50" />
+        {user.is_admin && (
+          <Accordion open={open === 5}>
+            <Link to="/dashboard/staff">
+              <ListItem className="p-0" selected={open === 5}>
+                <AccordionHeader
+                  selected={open === 5}
+                  className="border-b-0 p-3"
+                >
+                  <ListItemPrefix>
+                    <UsersIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  <Typography color="blue-gray" className="mr-auto font-normal">
+                    Staff
+                  </Typography>
+                </AccordionHeader>
+              </ListItem>
+            </Link>
+          </Accordion>
+        )}
+
         <div>
-          <ListItem>
-            <ListItemPrefix>
-              <UserCircleIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Profile
-          </ListItem>
-          <ListItem>
-            <ListItemPrefix>
-              <Cog6ToothIcon className="h-5 w-5" />
-            </ListItemPrefix>
-            Settings
-          </ListItem>
+          {user.is_admin && (
+            <>
+              <hr className="my-2 border-blue-gray-50" />
+              <ListItem>
+                <ListItemPrefix>
+                  <UserCircleIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                Profile
+              </ListItem>
+              <ListItem>
+                <ListItemPrefix>
+                  <Cog6ToothIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                Settings
+              </ListItem>
+            </>
+          )}
           <div className="user-box">
             <Typography variant="h5" className="ml-3">
               {localStorage.getItem("user")[0].toUpperCase() +

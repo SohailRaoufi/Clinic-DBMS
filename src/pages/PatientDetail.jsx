@@ -222,7 +222,7 @@ export default function PatientDetail() {
       return;
     }
 
-    if (new_treatment.paid != "") {
+    if (new_treatment.paid != "" && new_treatment.paid != "0") {
       const PayResponse = await post(
         `/api/treatment/${new_treatment.id}/pay/`,
         {

@@ -135,10 +135,6 @@ export default function AddPatient({ isEditing = false }) {
       treats[index] = a; // Assign each treatment to the `treats` object with the index as key
     });
 
-    if (treats == {}) {
-      setFormError({ add_treatment: "Please Add a Treatmetnt!" });
-      return;
-    }
     const response_data = {
       ...formData,
       treatments: {
@@ -158,7 +154,7 @@ export default function AddPatient({ isEditing = false }) {
 
         return;
       }
-      if (treats != {}) {
+      if (!treats) {
         const treat_response_data = {
           treatments: {
             ...treats,
