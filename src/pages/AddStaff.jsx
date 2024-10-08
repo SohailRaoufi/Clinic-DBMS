@@ -68,7 +68,7 @@ export default function AddStaff({ isEditing = false }) {
         password: data.password || "",
       });
     }
-  }, [isEditing,data]);
+  }, [data]);
 
   return (
     <div className="add-appointmnet">
