@@ -24,6 +24,8 @@ export default function AddStaff({ isEditing = false }) {
   };
 
   const handleSubmit = async (e) => {
+    console.log("here");
+    console.log(formData)
     e.preventDefault();
     if (!isEditing) {
       const response = await post("/api/staff/", {
@@ -59,8 +61,14 @@ export default function AddStaff({ isEditing = false }) {
   };
 
   useEffect(() => {
-    setFormData(data);
-  }, [isEditing, data]);
+      if (isEditing && data) {
+      setFormData({
+        username: data.username || "",
+        email: data.email || "",
+        password: data.password || "",
+      });
+    }
+  }, [isEditing,data]);
 
   return (
     <div className="add-appointmnet">
