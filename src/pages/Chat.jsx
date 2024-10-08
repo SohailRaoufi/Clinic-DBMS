@@ -10,18 +10,38 @@ import {
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 
+import { useWebSocket } from "../utils/webSocketProvider";
+
+import { get } from "../utils/ApiFetch";
+
 export default function Chat() {
   const [staff, setStaff] = useState([]);
-  const TestData = [
-    {
-      id: 1,
-      username: "Masoom",
-    },
-    {
-      id: 2,
-      username: "Sohail",
-    },
-  ];
+  const [websocket, setWebSocket] = useState();
+  const { initializeWebSocket, closeWebSocket } = useWebSocket();
+
+  useEffect(() => {
+    initializeWebSocket();
+    const hanldeStaff = async () => {
+      const response = await get(`/api/chats/`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.success) {
+        console.log(response.data);
+        return;
+      }
+
+      setStaff(response.data);
+    };
+
+    hanldeStaff();
+
+    return () => {
+      closeWebSocket();
+    };
+  }, [initializeWebSocket, closeWebSocket]);
 
   return (
     <div className="flex">
@@ -35,9 +55,16 @@ export default function Chat() {
             className="my-2 border-blue-gray-50"
           />
           <div style={{ marginTop: "1rem" }}>
-            {TestData.map((val, index) => (
+            {staff.map((val, index) => (
               <Accordion key={index} open={open === 1}>
-                <Link to={`/dashboard/chat/${val.id}`}>
+                <Link
+                  to={`/dashboard/chat/${val.id}`}
+                  state={{
+                    email: val.email,
+                    username: val.username,
+                    id: val.id,
+                  }}
+                >
                   <ListItem className="p-0" selected={open === 1}>
                     <AccordionHeader
                       onClick={() => handleOpen(1)}

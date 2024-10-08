@@ -154,10 +154,10 @@ export default function AddPatient({ isEditing = false }) {
 
         return;
       }
-      if (!treats) {
+      if (treatments.length > 0) {
         const treat_response_data = {
           treatments: {
-            ...treats,
+            ...treatments,
           },
         };
         const newResponse = await post(
