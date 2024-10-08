@@ -17,7 +17,7 @@ import {
   TabPanel,
 } from "@material-tailwind/react";
 
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, ShareIcon } from "@heroicons/react/24/outline";
 
 import { get, del, put, post } from "../utils/ApiFetch";
 
@@ -260,6 +260,9 @@ export default function PatientDetail() {
           </Link>
           <Link onClick={handleDelete}>
             <TrashIcon style={{ height: "20px" }} />
+          </Link>
+          <Link onClick={handleDelete}>
+            <ShareIcon style={{ height: "20px" }} />
           </Link>
         </div>
 

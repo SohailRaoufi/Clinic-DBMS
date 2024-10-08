@@ -7,7 +7,7 @@ import {
   ListItem,
   ListItemPrefix,
 } from "@material-tailwind/react";
-import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import { useWebSocket } from "../utils/webSocketProvider";
@@ -16,7 +16,6 @@ import { get } from "../utils/ApiFetch";
 
 export default function Chat() {
   const [staff, setStaff] = useState([]);
-  const [websocket, setWebSocket] = useState();
   const { initializeWebSocket, closeWebSocket } = useWebSocket();
 
   useEffect(() => {
