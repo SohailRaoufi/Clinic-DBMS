@@ -48,20 +48,17 @@ const ChatInterface = () => {
         );
 
         // Request the first page of chat history
-        wsRef.current.send(
-          JSON.stringify({
-            type: "scroll",
-            page: page, // Initial page is 1
-          })
-        );
       };
 
       wsRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(data);
+        console.log(data.messages);
         if (data.type === "chat_history") {
           loadingHistory.current = true;
-          setMessages((prevMessages) => [...data.messages, ...prevMessages]); // Prepend chat history
+          setMessages((prevMessages) => [
+            ...data.messages.messages,
+            ...prevMessages,
+          ]); // Prepend chat history
           setHasNext(data.message.has_next); // Update whether there are more messages to load
         } else if (data.type === "new_message") {
           loadingHistory.current = false;
