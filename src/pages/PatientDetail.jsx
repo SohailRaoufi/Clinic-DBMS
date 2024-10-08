@@ -269,7 +269,11 @@ export default function PatientDetail() {
             <TrashIcon style={{ height: "20px" }} />
           </Link>
 
-          <ShareIcon onClick={handleOpenShare} style={{ height: "20px" }} />
+          <ShareIcon
+            className="cursor-pointer"
+            onClick={handleOpenShare}
+            style={{ height: "20px" }}
+          />
         </div>
 
         {openShare && (

@@ -112,6 +112,10 @@ const ChatInterface = () => {
         </div>
       );
     } else if (message.type === "share") {
+      const patientData = message.text.split(",");
+      console.log(message.text);
+      const pateintName = patientData[1];
+      const pateintID = patientData[0];
       return (
         <div
           key={message.id}
@@ -127,10 +131,10 @@ const ChatInterface = () => {
             }`}
           >
             <Link
-              to={`/dashboard/patients/${message.text}`}
-              state={{ id: message.text }}
+              to={`/dashboard/patients/${pateintID}`}
+              state={{ id: pateintID }}
             >
-              Patient Link
+              {pateintName}
             </Link>
           </div>
         </div>
