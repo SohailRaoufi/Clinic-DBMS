@@ -34,7 +34,6 @@ export default function Staff() {
       });
       if (!response.success) {
         console.log(response.data);
-        console.log(response.status);
         return;
       }
 

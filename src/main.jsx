@@ -19,6 +19,7 @@ import Auth from "./pages/Auth";
 import PrivateRoute from "./utils/PrivateRouter";
 
 import "./index.css";
+import AdminOnlyAllowed from "./utils/AdminOnlyAllowed";
 
 if (!localStorage.getItem("HOST")) {
   localStorage.setItem("HOST", "http://localhost:8000");
@@ -67,20 +68,25 @@ const router = createBrowserRouter([
             element: <AddAppointment />,
           },
           {
-            path: "/dashboard/staff",
-            element: <Staff />,
-          },
-          {
-            path: "/dashboard/staff/add",
-            element: <AddStaff />,
-          },
-          {
-            path: "/dashboard/staff/:id",
-            element: <StaffDetail />,
-          },
-          {
-            path: "/dashboard/staff/edit/:id",
-            element: <AddStaff isEditing={true} />,
+            element: <AdminOnlyAllowed />,
+            children: [
+              {
+                path: "/dashboard/staff",
+                element: <Staff />,
+              },
+              {
+                path: "/dashboard/staff/add",
+                element: <AddStaff />,
+              },
+              {
+                path: "/dashboard/staff/:id",
+                element: <StaffDetail />,
+              },
+              {
+                path: "/dashboard/staff/edit/:id",
+                element: <AddStaff isEditing={true} />,
+              },
+            ],
           },
         ],
       },
