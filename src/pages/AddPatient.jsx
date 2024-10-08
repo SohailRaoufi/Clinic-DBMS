@@ -109,23 +109,23 @@ export default function AddPatient({ isEditing = false }) {
     phone_no: "",
     gender: "",
     martial_status: "",
-    HIV: false,
-    HCV: false,
-    HBS: false,
+    hiv: false,
+    hcv: false,
+    hbs: false,
     pregnancy: false,
     diabetes: false,
-    reflux: false,
+    reflux_esophagitis: false,
     notes: "",
   });
 
   const text_fields = ["name", "last_name", "addr", "job", "phone_no"];
   const checkbox_fields = [
-    "HIV",
-    "HCV",
-    "HBS",
+    "hiv",
+    "hcv",
+    "hbs",
     "pregnancy",
-    "diabaetes",
-    "reflux",
+    "diabetes",
+    "reflux_esophagitis",
   ];
 
   const handleSubmit = async (e) => {
@@ -294,7 +294,7 @@ export default function AddPatient({ isEditing = false }) {
                       onChange={handleChange}
                       label={field.toUpperCase()}
                       name={field}
-                      value={formData[field]}
+                      checked={formData[field]}
                     />
                   </div>
                 ))}

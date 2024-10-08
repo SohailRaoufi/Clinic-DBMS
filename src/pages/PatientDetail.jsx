@@ -36,12 +36,12 @@ export default function PatientDetail() {
     phone_no: "",
     gender: "",
     martial_status: "",
-    HIV: null,
-    HCV: null,
-    HBS: null,
-    pregnancy: null,
-    diabetes: null,
-    reflux: null,
+    hiv: false,
+    hcv: false,
+    hbs: false,
+    pregnancy: false,
+    diabetes: false,
+    reflux_esophagitis: false,
     notes: "",
   });
   const [loading, setLoading] = useState(true);
@@ -84,14 +84,15 @@ export default function PatientDetail() {
       setTreatments(data.treatments);
       setLogs(data.logs);
       setData(data);
-      const updatedData = Object.keys(data.data).reduce((acc, key) => {
-        acc[key] =
-          data.data[key] == null || data.data[key] == ""
-            ? "N/A"
-            : data.data[key];
-        return acc;
-      }, {});
-      setPatient(updatedData);
+      // const updatedData = Object.keys(data.data).reduce((acc, key) => {
+      //   acc[key] =
+      //     data.data[key] == null || data.data[key] == ""
+      //       ? "N/A"
+      //       : data.data[key];
+      //   return acc;
+      // }, {});
+
+      setPatient(data.data);
       setLoading(false);
     };
 
@@ -187,7 +188,7 @@ export default function PatientDetail() {
       );
     } else {
       setFormError("");
-      console.log(new_treatment);
+
       handleUpdate(new_treatment);
       const updatedTreatments = treatments.map((val) => {
         if (val.id === new_treatment.id) {
@@ -325,18 +326,20 @@ export default function PatientDetail() {
           <div className="md:col-span-2">
             <p className="text-sm text-gray-500">Medical Conditions</p>
             <ul className="list-disc pl-5 mt-1 text-lg text-gray-900">
-              {patient.HIV && <li>HIV</li>}
-              {patient.HCV && <li>HCV</li>}
-              {patient.HBS && <li>HBS</li>}
+              {patient.hiv && <li>HIV</li>}
+              {patient.hcv && <li>HCV</li>}
+              {patient.hbs && <li>HBS</li>}
               {patient.pregnancy && <li>Pregnancy</li>}
               {patient.diabetes && <li>Diabetes</li>}
-              {patient.reflux && <li>Reflux</li>}
-              {!patient.HIV &&
-                !patient.HCV &&
-                !patient.HBS &&
+              {patient.reflux_esophagitis && <li>Reflux</li>}
+              {!patient.hiv &&
+                !patient.hcv &&
+                !patient.hbs &&
                 !patient.pregnancy &&
                 !patient.diabetes &&
-                !patient.reflux && <li>No major medical conditions</li>}
+                !patient.reflux_esophagitis && (
+                  <li>No major medical conditions</li>
+                )}
             </ul>
           </div>
 

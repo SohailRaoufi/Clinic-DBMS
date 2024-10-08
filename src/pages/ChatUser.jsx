@@ -27,7 +27,6 @@ const ChatInterface = () => {
   const [email] = useState(state?.email || null);
   const wsRef = useRef(null);
   const host = localStorage.getItem("HOST");
-  console.log(host);
 
   useEffect(() => {
     wsRef.current = initializeWebSocket();
@@ -85,6 +84,7 @@ const ChatInterface = () => {
         </div>
       );
     } else if (message.type === "link") {
+      const fileLink = message.link.split("/");
       return (
         <div
           key={message.id}
@@ -95,8 +95,8 @@ const ChatInterface = () => {
           <div
             className={`p-3 rounded-lg max-w-xs ${
               message.sender === state?.id
-                ? "bg-blue-500 text-white"
-                : "bg-black text-white"
+                ? "bg-green-500 text-white"
+                : "bg-green-500 text-white"
             }`}
           >
             <Typography variant="body2">
@@ -105,7 +105,7 @@ const ChatInterface = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Download File
+                {fileLink[fileLink.length - 1]}
               </a>
             </Typography>
           </div>
