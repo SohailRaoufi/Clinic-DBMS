@@ -1,11 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Card, Typography, Input, Button } from "@material-tailwind/react";
+import {
+  Button,
+  Dialog,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Input,
+  Checkbox,
+} from "@material-tailwind/react";
+import { PlusIcon } from "@heroicons/react/16/solid";
 import { useWebSocket } from "../utils/webSocketProvider";
 import "../assets/styles/ChatUser.css";
 
 const ChatInterface = () => {
   const { state } = useLocation();
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen((cur) => !cur);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const messageContainerRef = useRef(null);
@@ -52,21 +65,19 @@ const ChatInterface = () => {
   }, [initializeWebSocket, closeWebSocket, email]);
 
   const displayMessage = (message) => {
-    console.log(message);
-    console.log(state.id);
     if (message.type === "text") {
       return (
         <div
           key={message.id}
           className={`flex ${
-            message.sender === state?.id ? "justify-end" : "justify-start"
+            message.sender === state?.id ? "justify-start" : "justify-end"
           } mb-2`}
         >
           <div
             className={`p-3 rounded-lg max-w-xs ${
               message.sender === state?.id
-                ? "bg-black text-white"
-                : "bg-blue-500 text-white"
+                ? "bg-blue-500 text-white"
+                : "bg-black text-white"
             }`}
           >
             <Typography variant="body2">{message.text}</Typography>
@@ -78,14 +89,14 @@ const ChatInterface = () => {
         <div
           key={message.id}
           className={`flex ${
-            message.sender === state?.id ? "justify-end" : "justify-start"
+            message.sender === state?.id ? "justify-start" : "justify-end"
           } mb-2`}
         >
           <div
             className={`p-3 rounded-lg max-w-xs ${
               message.sender === state?.id
-                ? "bg-black text-white"
-                : "bg-blue-500 text-white"
+                ? "bg-blue-500 text-white"
+                : "bg-black text-white"
             }`}
           >
             <Typography variant="body2">
@@ -103,7 +114,7 @@ const ChatInterface = () => {
     }
   };
 
-  const sendMessage = () => {
+  const sendMessage = (e) => {
     if (message.trim() && wsRef.current) {
       wsRef.current.send(
         JSON.stringify({
@@ -130,6 +141,7 @@ const ChatInterface = () => {
         );
       };
       reader.readAsDataURL(file);
+      setOpen(false);
     }
   };
 
@@ -170,18 +182,42 @@ const ChatInterface = () => {
             onKeyDown={handleKeyPress}
           />
           <Button
+            className="sendBtn"
             onClick={sendMessage}
-            className="ml-2"
             disabled={!wsRef.current}
           >
             Send
           </Button>
-          <input type="file" ref={fileInputRef} className="ml-2" />
-          <Button onClick={sendFile} className="ml-2" disabled={!wsRef.current}>
-            Send File
-          </Button>
+          <PlusIcon
+            onClick={handleOpen}
+            className="cursor-pointer text-black plusIcon"
+            style={{ height: "2rem" }}
+          />
         </div>
       </Card>
+
+      <Dialog
+        size="xs"
+        open={open}
+        handler={handleOpen}
+        className="bg-transparent shadow-none"
+      >
+        <Card className="mx-auto w-full max-w-[24rem]">
+          <CardBody className="flex flex-col gap-4">
+            <Typography variant="h4" color="blue-gray">
+              Select Your File
+            </Typography>
+            <input type="file" ref={fileInputRef} className="ml-2" />
+            <Button
+              onClick={sendFile}
+              className="ml-2"
+              disabled={!wsRef.current}
+            >
+              Send File
+            </Button>
+          </CardBody>
+        </Card>
+      </Dialog>
     </div>
   );
 };
