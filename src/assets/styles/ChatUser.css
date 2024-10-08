@@ -11,7 +11,7 @@
   flex-direction: column;
   gap: 1rem;
   height: 75%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .plusIcon {
   transition: background-color 0.2s;

@@ -28,26 +28,44 @@ const ChatInterface = () => {
   const wsRef = useRef(null);
   const host = localStorage.getItem("HOST");
 
+  const [page, setPage] = useState(1); // Page to fetch
+  const [hasNext, setHasNext] = useState(true); // Whether more messages are available
+  const scrollRef = useRef(null);
+  const loadingHistory = useRef(false);
+
   useEffect(() => {
     wsRef.current = initializeWebSocket();
 
     if (wsRef.current) {
       wsRef.current.onopen = () => {
         console.log("WebSocket connection opened");
+        // Initial connection request, could include the current email or user info
         wsRef.current.send(
           JSON.stringify({
             type: "connect",
             email: email,
           })
         );
+
+        // Request the first page of chat history
+        wsRef.current.send(
+          JSON.stringify({
+            type: "scroll",
+            page: page, // Initial page is 1
+          })
+        );
       };
 
       wsRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log(data);
         if (data.type === "chat_history") {
-          setMessages((prevMessages) => [...prevMessages, ...data.messages]);
+          loadingHistory.current = true;
+          setMessages((prevMessages) => [...data.messages, ...prevMessages]); // Prepend chat history
+          setHasNext(data.message.has_next); // Update whether there are more messages to load
         } else if (data.type === "new_message") {
-          setMessages((prevMessages) => [...prevMessages, data.message]);
+          loadingHistory.current = false;
+          setMessages((prevMessages) => [...prevMessages, data.message]); // Add new incoming messages
         } else if (data.error) {
           console.error("Error:", data.error);
         }
@@ -61,7 +79,37 @@ const ChatInterface = () => {
     return () => {
       closeWebSocket();
     };
-  }, [initializeWebSocket, closeWebSocket, email]);
+  }, [initializeWebSocket, closeWebSocket, email, page]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log(hasNext);
+      if (scrollRef.current && scrollRef.current.scrollTop <= 10 && hasNext) {
+        // If scrolled to the top and there are more messages, request next page
+        const nextPage = page + 1;
+        setPage(nextPage);
+
+        // Request more messages from the WebSocket server
+        wsRef.current.send(
+          JSON.stringify({
+            type: "scroll",
+            page: nextPage,
+          })
+        );
+      }
+    };
+    const scrollContainer = scrollRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener("scroll", handleScroll);
+    }
+
+    // Cleanup the scroll event listener when the component unmounts
+    return () => {
+      if (scrollContainer) {
+        scrollContainer.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [hasNext, page]);
 
   const displayMessage = (message) => {
     if (message.type === "text") {
@@ -180,8 +228,23 @@ const ChatInterface = () => {
   };
 
   useEffect(() => {
-    const messageContainer = messageContainerRef.current;
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+    const messageContainer = scrollRef.current;
+
+    if (loadingHistory.current && messageContainer) {
+      // Save the scroll position before adding more messages
+      const previousScrollHeight = messageContainer.scrollHeight;
+      const previousScrollTop = messageContainer.scrollTop;
+
+      // After rendering messages, adjust the scroll position to maintain the user's view
+      const newScrollHeight = messageContainer.scrollHeight;
+      messageContainer.scrollTop =
+        newScrollHeight - previousScrollHeight + previousScrollTop;
+
+      loadingHistory.current = false;
+    } else if (!loadingHistory.current && messageContainer) {
+      // Scroll to the bottom when new messages arrive (and not loading history)
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
   }, [messages]);
 
   return (
@@ -189,13 +252,13 @@ const ChatInterface = () => {
       <Card className="w-full max-w-2xl p-4 bg-white shadow-lg rounded-lg flex flex-col h-full">
         <div className="border-b pb-2 mb-4">
           <Typography variant="h5" color="blue-gray" className="font-semibold">
-            Chat with {state?.username}
+            {state?.username}
           </Typography>
         </div>
 
         <div
           className="messageBox flex-grow overflow-y-auto mb-4"
-          ref={messageContainerRef}
+          ref={scrollRef}
         >
           {messages.map((message) => displayMessage(message))}
         </div>
