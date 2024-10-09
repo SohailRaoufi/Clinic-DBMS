@@ -16,7 +16,9 @@ import AddStaff from "./pages/AddStaff";
 import StaffDetail from "./pages/StaffDetail";
 import Chat from "./pages/Chat";
 import ChatUser from "./pages/ChatUser";
-
+import Settings from "./pages/Settings";
+import Daily from "./pages/Daily";
+import AddDaily from "./pages/AddDaily";
 import Auth from "./pages/Auth";
 import PrivateRoute from "./utils/PrivateRouter";
 
@@ -78,6 +80,19 @@ const router = createBrowserRouter([
             element: <ChatUser />,
           },
           {
+            path: "/dashboard/daily",
+            element: <Daily />,
+          },
+          {
+            path: "/dashboard/daily/add",
+            element: <AddDaily />,
+          },
+          {
+            path: "/dashboard/daily/edit/:id",
+            element: <AddDaily isEditing={true} />,
+          },
+
+          {
             element: <AdminOnlyAllowed />,
             children: [
               {
@@ -95,6 +110,10 @@ const router = createBrowserRouter([
               {
                 path: "/dashboard/staff/edit/:id",
                 element: <AddStaff isEditing={true} />,
+              },
+              {
+                path: "/dashboard/settings",
+                element: <Settings />,
               },
             ],
           },

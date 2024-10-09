@@ -46,20 +46,26 @@ const ChatInterface = () => {
             email: email,
           })
         );
+        wsRef.current.send(
+          JSON.stringify({
+            type: "scroll",
+            page: page,
+          })
+        );
 
         // Request the first page of chat history
       };
 
       wsRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(data.messages);
+
         if (data.type === "chat_history") {
+          console.log(data.messages);
           loadingHistory.current = true;
-          setMessages((prevMessages) => [
-            ...data.messages.messages,
-            ...prevMessages,
-          ]); // Prepend chat history
-          setHasNext(data.message.has_next); // Update whether there are more messages to load
+          const reversedMessages = data.messages.messages.reverse();
+          console.log(reversedMessages);
+          setMessages((prevMessages) => [...reversedMessages, ...prevMessages]); // Prepend chat history
+          setHasNext(data.messages.has_next); // Update whether there are more messages to load
         } else if (data.type === "new_message") {
           loadingHistory.current = false;
           setMessages((prevMessages) => [...prevMessages, data.message]); // Add new incoming messages
@@ -81,7 +87,7 @@ const ChatInterface = () => {
   useEffect(() => {
     const handleScroll = () => {
       console.log(hasNext);
-      if (scrollRef.current && scrollRef.current.scrollTop <= 10 && hasNext) {
+      if (scrollRef.current && scrollRef.current.scrollTop == 0 && hasNext) {
         // If scrolled to the top and there are more messages, request next page
         const nextPage = page + 1;
         setPage(nextPage);
@@ -108,11 +114,11 @@ const ChatInterface = () => {
     };
   }, [hasNext, page]);
 
-  const displayMessage = (message) => {
+  const displayMessage = (message, index) => {
     if (message.type === "text") {
       return (
         <div
-          key={message.id}
+          key={index + 1}
           className={`flex ${
             message.sender === state?.id ? "justify-start" : "justify-end"
           } mb-2`}
@@ -124,7 +130,7 @@ const ChatInterface = () => {
                 : "bg-black text-white"
             }`}
           >
-            <Typography variant="body2">{message.text}</Typography>
+            <Typography>{message.text}</Typography>
           </div>
         </div>
       );
@@ -132,7 +138,7 @@ const ChatInterface = () => {
       const fileLink = message.link.split("/");
       return (
         <div
-          key={message.id}
+          key={index + 1}
           className={`flex ${
             message.sender === state?.id ? "justify-start" : "justify-end"
           } mb-2`}
@@ -144,7 +150,7 @@ const ChatInterface = () => {
                 : "bg-green-500 text-white"
             }`}
           >
-            <Typography variant="body2">
+            <Typography>
               <a
                 href={`${host}${message.link}`}
                 target="_blank"
@@ -158,12 +164,11 @@ const ChatInterface = () => {
       );
     } else if (message.type === "share") {
       const patientData = message.text.split(",");
-      console.log(message.text);
       const pateintName = patientData[1];
       const pateintID = patientData[0];
       return (
         <div
-          key={message.id}
+          key={index + 1}
           className={`flex ${
             message.sender === state?.id ? "justify-start" : "justify-end"
           } mb-2`}
@@ -226,22 +231,7 @@ const ChatInterface = () => {
 
   useEffect(() => {
     const messageContainer = scrollRef.current;
-
-    if (loadingHistory.current && messageContainer) {
-      // Save the scroll position before adding more messages
-      const previousScrollHeight = messageContainer.scrollHeight;
-      const previousScrollTop = messageContainer.scrollTop;
-
-      // After rendering messages, adjust the scroll position to maintain the user's view
-      const newScrollHeight = messageContainer.scrollHeight;
-      messageContainer.scrollTop =
-        newScrollHeight - previousScrollHeight + previousScrollTop;
-
-      loadingHistory.current = false;
-    } else if (!loadingHistory.current && messageContainer) {
-      // Scroll to the bottom when new messages arrive (and not loading history)
-      messageContainer.scrollTop = messageContainer.scrollHeight;
-    }
+    messageContainer.scrollTop = messageContainer.scrollHeight;
   }, [messages]);
 
   return (
@@ -257,7 +247,7 @@ const ChatInterface = () => {
           className="messageBox flex-grow overflow-y-auto mb-4"
           ref={scrollRef}
         >
-          {messages.map((message) => displayMessage(message))}
+          {messages.map((message, index) => displayMessage(message, index))}
         </div>
 
         <div className="chatInput border-t pt-4 flex gap-2 items-center">

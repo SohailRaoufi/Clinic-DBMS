@@ -118,6 +118,23 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
+        <Accordion open={open === 4}>
+          <Link to="/dashboard/daily">
+            <ListItem className="p-0" selected={open === 4}>
+              <AccordionHeader
+                onClick={() => handleOpen(4)}
+                className="border-b-0 p-3"
+              >
+                <ListItemPrefix>
+                  <ClockIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  Daily
+                </Typography>
+              </AccordionHeader>
+            </ListItem>
+          </Link>
+        </Accordion>
         {user.is_admin && (
           <Accordion open={open === 5}>
             <Link to="/dashboard/staff">
@@ -142,18 +159,14 @@ export function NavbarSimple() {
           {user.is_admin && (
             <>
               <hr className="my-2 border-blue-gray-50" />
-              <ListItem>
-                <ListItemPrefix>
-                  <UserCircleIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                Profile
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <Cog6ToothIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                Settings
-              </ListItem>
+              <Link to={`/dashboard/settings`}>
+                <ListItem>
+                  <ListItemPrefix>
+                    <Cog6ToothIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  Settings
+                </ListItem>
+              </Link>
             </>
           )}
           <div className="user-box">
