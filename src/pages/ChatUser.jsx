@@ -26,7 +26,7 @@ const ChatInterface = () => {
   const { websocket, initializeWebSocket, closeWebSocket } = useWebSocket();
   const [email] = useState(state?.email || null);
   const wsRef = useRef(null);
-  const host = localStorage.getItem("HOST");
+  const host = `http://${import.meta.env.VITE_BACKEND_URL}`;
 
   const [page, setPage] = useState(1); // Page to fetch
   const [hasNext, setHasNext] = useState(true); // Whether more messages are available
