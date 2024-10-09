@@ -109,7 +109,7 @@ export default function Patient() {
 
   const searchPatient = async () => {
     if (search.trim() !== "") {
-      const phoneRegex = /^07[02346789]\d{7}|02[0]\d{7}$/;
+      const phoneRegex = /^\d+$/;
       let type = "";
       if (phoneRegex.test(search)) {
         type = "number";
