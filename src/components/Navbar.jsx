@@ -9,9 +9,6 @@ export function NavbarSearch() {
       <div>
         <Input color="teal" label="Search Patient" />
       </div>
-      <div>
-        <Button variant="filled">Search</Button>
-      </div>
     </div>
   );
 }

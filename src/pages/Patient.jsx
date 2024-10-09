@@ -13,16 +13,13 @@ import Mypagination from "../components/MyPagination";
 export default function Patient() {
   const [patients, setPatients] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-
-  // Calculate the indexes for the current page
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = patients.slice(indexOfFirstItem, indexOfLastItem);
-  console.log(currentItems);
+  const [countP, setCountP] = useState(0);
+  const [hasNext, setHasNext] = useState(null);
+  const [hasPrev, setHasPrev] = useState(null);
+  const currentItems = patients;
 
   // Calculate total pages
-  const totalPages = Math.ceil(patients.length / itemsPerPage);
+  const totalPages = Math.ceil(countP / 5);
 
   // Function to change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -45,11 +42,60 @@ export default function Patient() {
         console.log(`Unexpected data format: ${data}`);
         return;
       }
+      setCountP(data.count);
+      setHasNext(data.next);
+      setHasPrev(data.previous);
       setPatients(data.results);
     };
 
     get_data();
   }, []);
+
+  const nextPage = async () => {
+    const response = await get(hasNext, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!response.success) {
+      console.log(response.data);
+      console.log(response.status);
+      return;
+    }
+
+    const data = response?.data;
+    if (!data || !data.results) {
+      console.log(`Unexpected data format: ${data}`);
+      return;
+    }
+    setHasNext(data.next);
+    setHasPrev(data.previous);
+    setPatients(data.results);
+  };
+
+  const PrevPage = async () => {
+    const response = await get(hasPrev, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!response.success) {
+      console.log(response.data);
+      console.log(response.status);
+      return;
+    }
+
+    const data = response?.data;
+    if (!data || !data.results) {
+      console.log(`Unexpected data format: ${data}`);
+      return;
+    }
+    setHasNext(data.next);
+    setHasPrev(data.previous);
+    setPatients(data.results);
+  };
 
   return (
     <div>
@@ -144,6 +190,8 @@ export default function Patient() {
                 totalPages={totalPages}
                 currentPage={currentPage}
                 paginate={paginate}
+                hasNext={nextPage}
+                hasPrev={PrevPage}
               />
             </div>
           </div>

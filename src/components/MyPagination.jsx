@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Button, IconButton } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-export default function Mypagination({ totalPages, currentPage, paginate }) {
+export default function Mypagination({
+  totalPages,
+  currentPage,
+  paginate,
+  hasNext,
+  hasPrev,
+}) {
   const [active, setActive] = useState(currentPage);
 
   useEffect(() => {
@@ -16,6 +22,8 @@ export default function Mypagination({ totalPages, currentPage, paginate }) {
     onClick: () => {
       setActive(index);
       paginate(index);
+      if (index < currentPage) hasPrev();
+      else hasNext();
     },
   });
 
@@ -24,6 +32,7 @@ export default function Mypagination({ totalPages, currentPage, paginate }) {
 
     setActive(active + 1);
     paginate(active + 1);
+    hasNext();
   };
 
   const prev = () => {
@@ -31,6 +40,7 @@ export default function Mypagination({ totalPages, currentPage, paginate }) {
 
     setActive(active - 1);
     paginate(active - 1);
+    hasPrev();
   };
 
   return (
