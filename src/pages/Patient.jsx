@@ -205,7 +205,7 @@ export default function Patient() {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {patient.name}
+                          {`${patient.name} ${patient.last_name}`}
                         </Typography>
                       </td>
                       <td>
