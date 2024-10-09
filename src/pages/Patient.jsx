@@ -16,10 +16,13 @@ export default function Patient() {
   const [countP, setCountP] = useState(0);
   const [hasNext, setHasNext] = useState(null);
   const [hasPrev, setHasPrev] = useState(null);
-  const currentItems = patients;
+
+  const [search, setSearch] = useState("");
+  const [filteredPateint, setfilteredPatient] = useState([]);
+  const currentItems = filteredPateint;
 
   // Calculate total pages
-  const totalPages = Math.ceil(countP / 5);
+  const totalPages = Math.ceil(countP / 20);
 
   // Function to change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -46,6 +49,7 @@ export default function Patient() {
       setHasNext(data.next);
       setHasPrev(data.previous);
       setPatients(data.results);
+      setfilteredPatient(data.results);
     };
 
     get_data();
@@ -97,9 +101,56 @@ export default function Patient() {
     setPatients(data.results);
   };
 
+  useEffect(() => {
+    if (search.trim() === "") {
+      setfilteredPatient(patients);
+    }
+  }, [search]);
+
+  const searchPatient = async () => {
+    if (search.trim() !== "") {
+      const phoneRegex = /^07[02346789]\d{7}|02[0]\d{7}$/;
+      let type = "";
+      if (phoneRegex.test(search)) {
+        type = "number";
+      } else {
+        type = "name";
+      }
+
+      const response = await get(
+        `/api/patient/search/?type=${type}&data=${search}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (!response.success) {
+        console.log(response.data);
+        console.log(response.status);
+        return;
+      }
+
+      const data = response?.data;
+      if (!data || !data.results) {
+        console.log(`Unexpected data format: ${data}`);
+        return;
+      }
+      setCountP(data.count);
+      setHasNext(data.next);
+      setHasPrev(data.previous);
+      setfilteredPatient(data.results);
+    }
+  };
   return (
     <div>
-      <NavbarSearch />
+      <NavbarSearch
+        name={"Patient"}
+        search={search}
+        setSearch={setSearch}
+        searchPatient={searchPatient}
+        btn={true}
+      />
       <div className="flex-col table patient-table">
         <div className="table-head">
           <Link to="/dashboard/patients/add">

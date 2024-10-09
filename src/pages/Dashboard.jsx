@@ -14,14 +14,19 @@ export default function Dashboard() {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [search, setSearch] = useState("");
+  const [filteredAppointment, setfilteredAppointment] = useState([]);
 
   const headers = ["Time", "Day", "Patient"];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = appointments.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredAppointment.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
-  const totalPages = Math.ceil(appointments.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAppointment.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -48,6 +53,7 @@ export default function Dashboard() {
       });
       if (response.success) {
         setAppointments(response.data);
+        setfilteredAppointment(response.data);
       } else {
         console.error("Failed to fetch appointments");
       }
@@ -55,18 +61,26 @@ export default function Dashboard() {
     fetchAppointments();
   }, [date]);
 
+  useEffect(() => {
+    if (search.trim() === "") {
+      setfilteredAppointment(appointments);
+    } else {
+      const filterd = appointments.filter((a) =>
+        a.patient.toLowerCase().includes(search.trim().toLowerCase())
+      );
+
+      setfilteredAppointment(filterd);
+    }
+  }, [search]);
+
   const handleDateChange = (e) => {
     setDate(e.target.value);
   };
 
   return (
     <>
-      <NavbarSearch />
-      <div className="card">
-        <SimpleCard title={"Total No Patients"} number={"200"} />
-        <SimpleCard title={"No Appointments Today"} number={"10"} />
-        <SimpleCard title={"Anything"} number={"000"} />
-      </div>
+      <NavbarSearch name={"Patient"} search={search} setSearch={setSearch} />
+
       <div className="table">
         <div className="relative table-head">
           <h1>Appointments</h1>

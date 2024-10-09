@@ -34,15 +34,18 @@ import { get } from "../utils/ApiFetch";
 
 const AnalyticsPage = () => {
   const [analyticsType, setAnalyticsType] = useState("day");
-  const [data, setData] = useState("");
+  const [data, setData] = useState(new Date().toISOString().split("T")[0]);
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     setAnalyticsData(null);
-    setData("");
   }, [analyticsType]);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
 
   const fetchAnalytics = async () => {
     setLoading(true);
@@ -154,7 +157,10 @@ const AnalyticsPage = () => {
               <Typography color="blue-gray" className="mb-4">
                 Total Payment: Af {analyticsData.total.toFixed(2)}
               </Typography>
-              <div className="h-64 sm:h-96">{renderChart()}</div>
+              <hr style={{ border: "1px solid black" }} />
+              <div className="h-64 sm:h-96">
+                {analyticsType !== "day" && renderChart()}
+              </div>
               {analyticsType === "day" && analyticsData.payments && (
                 <div className="mt-4">
                   <Typography variant="h6" color="blue-gray" className="mb-2">

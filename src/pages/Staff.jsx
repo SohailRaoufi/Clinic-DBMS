@@ -14,13 +14,16 @@ export default function Staff() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
+  const [search, setSearch] = useState("");
+  const [filteredStaff, setfilteredStaff] = useState([]);
+
   // Calculate the indexes for the current page
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = staff.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredStaff.slice(indexOfFirstItem, indexOfLastItem);
 
   // Calculate total pages
-  const totalPages = Math.ceil(staff.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredStaff.length / itemsPerPage);
 
   // Function to change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -43,13 +46,26 @@ export default function Staff() {
         return;
       }
       setStaff(data.results);
+      setfilteredStaff(data.results);
     };
 
     get_data();
   }, []);
+  useEffect(() => {
+    if (search.trim() === "") {
+      setfilteredStaff(staff);
+    } else {
+      const filterd = staff.filter((a) =>
+        a.username.toLowerCase().includes(search.trim().toLowerCase())
+      );
+
+      setfilteredStaff(filterd);
+    }
+  }, [search]);
 
   return (
     <div>
+      <NavbarSearch name={"Patient"} search={search} setSearch={setSearch} />
       <div className="flex-col table patient-table">
         <div className="table-head">
           <Link to="/dashboard/staff/add">

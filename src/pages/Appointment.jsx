@@ -14,13 +14,19 @@ export default function Appointment() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
+  const [search, setSearch] = useState("");
+  const [filteredAppointment, setfilteredAppointment] = useState([]);
+
   const headers = ["Time", "Day", "Patient"];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = appointments.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredAppointment.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
-  const totalPages = Math.ceil(appointments.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAppointment.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -47,6 +53,7 @@ export default function Appointment() {
       });
       if (response.success) {
         setAppointments(response.data);
+        setfilteredAppointment(response.data);
       } else {
         console.error("Failed to fetch appointments");
       }
@@ -54,12 +61,24 @@ export default function Appointment() {
     fetchAppointments();
   }, [date]);
 
+  useEffect(() => {
+    if (search.trim() === "") {
+      setfilteredAppointment(appointments);
+    } else {
+      const filterd = appointments.filter((a) =>
+        a.patient.toLowerCase().includes(search.trim().toLowerCase())
+      );
+
+      setfilteredAppointment(filterd);
+    }
+  }, [search]);
+
   const handleDateChange = (e) => {
     setDate(e.target.value);
   };
   return (
     <div>
-      <NavbarSearch />
+      <NavbarSearch name={"Patient"} search={search} setSearch={setSearch} />
       <div className="flex-col table relative patient-table">
         <div className="table-head">
           <h1 className="head-text">All Appointments</h1>
