@@ -144,7 +144,7 @@ const AnalyticsPage = () => {
 
           {analyticsData && (
             <div
-              className="mt-4 h-48 sm:h-64"
+              className="mt-4 h-48 sm:h-64 flex flex-col gap-2"
               style={{ height: "50rem", width: "100%", overflowY: "auto" }}
             >
               <Typography variant="h6" color="blue-gray" className="mb-2">
@@ -162,11 +162,11 @@ const AnalyticsPage = () => {
                 {analyticsType !== "day" && renderChart()}
               </div>
               {analyticsType === "day" && analyticsData.payments && (
-                <div className="mt-4">
+                <div className="mt-4  flex flex-col gap-2">
                   <Typography variant="h6" color="blue-gray" className="mb-2">
                     Payment Details
                   </Typography>
-                  <ul className="list-disc pl-5">
+                  <ul className="list-disc pl-5  flex flex-col gap-2">
                     {analyticsData.payments.map((payment, index) => (
                       <li key={index}>
                         {payment.name}: Af {payment.payment.toFixed(2)} (
