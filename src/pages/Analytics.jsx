@@ -145,7 +145,7 @@ const AnalyticsPage = () => {
           {analyticsData && (
             <div
               className="mt-4 h-48 sm:h-64"
-              style={{ height: "50rem", width: "60rem" }}
+              style={{ height: "50rem", width: "100%", overflowY: "auto" }}
             >
               <Typography variant="h6" color="blue-gray" className="mb-2">
                 {analyticsType === "day"
