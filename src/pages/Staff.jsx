@@ -65,7 +65,7 @@ export default function Staff() {
 
   return (
     <div>
-      <NavbarSearch name={"Patient"} search={search} setSearch={setSearch} />
+      <NavbarSearch name={"Staff"} search={search} setSearch={setSearch} />
       <div className="flex-col table patient-table">
         <div className="table-head">
           <Link to="/dashboard/staff/add">

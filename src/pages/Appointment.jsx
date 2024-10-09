@@ -78,7 +78,11 @@ export default function Appointment() {
   };
   return (
     <div>
-      <NavbarSearch name={"Patient"} search={search} setSearch={setSearch} />
+      <NavbarSearch
+        name={"Appointment"}
+        search={search}
+        setSearch={setSearch}
+      />
       <div className="flex-col table relative patient-table">
         <div className="table-head">
           <h1 className="head-text">All Appointments</h1>

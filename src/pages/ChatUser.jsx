@@ -60,10 +60,9 @@ const ChatInterface = () => {
         const data = JSON.parse(event.data);
 
         if (data.type === "chat_history") {
-          console.log(data.messages);
           loadingHistory.current = true;
           const reversedMessages = data.messages.messages.reverse();
-          console.log(reversedMessages);
+
           setMessages((prevMessages) => [...reversedMessages, ...prevMessages]); // Prepend chat history
           setHasNext(data.messages.has_next); // Update whether there are more messages to load
         } else if (data.type === "new_message") {
@@ -86,7 +85,6 @@ const ChatInterface = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log(hasNext);
       if (scrollRef.current && scrollRef.current.scrollTop == 0 && hasNext) {
         // If scrolled to the top and there are more messages, request next page
         const nextPage = page + 1;

@@ -79,7 +79,11 @@ export default function Dashboard() {
 
   return (
     <>
-      <NavbarSearch name={"Patient"} search={search} setSearch={setSearch} />
+      <NavbarSearch
+        name={"Appointment"}
+        search={search}
+        setSearch={setSearch}
+      />
 
       <div className="table">
         <div className="relative table-head">
