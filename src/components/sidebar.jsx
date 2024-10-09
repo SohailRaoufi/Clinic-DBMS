@@ -27,6 +27,7 @@ import "./styles/sidebar.css";
 
 import { LogOut } from "../utils/Logout";
 import { useNavigate } from "react-router-dom";
+import { ChartBarIcon } from "@heroicons/react/16/solid";
 
 export function NavbarSimple() {
   const [open, setOpen] = React.useState(0);
@@ -136,23 +137,48 @@ export function NavbarSimple() {
           </Link>
         </Accordion>
         {user.is_admin && (
-          <Accordion open={open === 5}>
-            <Link to="/dashboard/staff">
-              <ListItem className="p-0" selected={open === 5}>
-                <AccordionHeader
-                  selected={open === 5}
-                  className="border-b-0 p-3"
-                >
-                  <ListItemPrefix>
-                    <UsersIcon className="h-5 w-5" />
-                  </ListItemPrefix>
-                  <Typography color="blue-gray" className="mr-auto font-normal">
-                    Staff
-                  </Typography>
-                </AccordionHeader>
-              </ListItem>
-            </Link>
-          </Accordion>
+          <>
+            <Accordion open={open === 5}>
+              <Link to="/dashboard/staff">
+                <ListItem className="p-0" selected={open === 5}>
+                  <AccordionHeader
+                    selected={open === 5}
+                    className="border-b-0 p-3"
+                  >
+                    <ListItemPrefix>
+                      <UsersIcon className="h-5 w-5" />
+                    </ListItemPrefix>
+                    <Typography
+                      color="blue-gray"
+                      className="mr-auto font-normal"
+                    >
+                      Staff
+                    </Typography>
+                  </AccordionHeader>
+                </ListItem>
+              </Link>
+            </Accordion>
+            <Accordion open={open === 6}>
+              <Link to="/dashboard/analytics">
+                <ListItem className="p-0" selected={open === 6}>
+                  <AccordionHeader
+                    selected={open === 6}
+                    className="border-b-0 p-3"
+                  >
+                    <ListItemPrefix>
+                      <ChartBarIcon className="h-5 w-5" />
+                    </ListItemPrefix>
+                    <Typography
+                      color="blue-gray"
+                      className="mr-auto font-normal"
+                    >
+                      Analytics
+                    </Typography>
+                  </AccordionHeader>
+                </ListItem>
+              </Link>
+            </Accordion>
+          </>
         )}
 
         <div>

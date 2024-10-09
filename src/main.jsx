@@ -21,6 +21,7 @@ import Daily from "./pages/Daily";
 import AddDaily from "./pages/AddDaily";
 import Auth from "./pages/Auth";
 import PrivateRoute from "./utils/PrivateRouter";
+import Analytics from "./pages/Analytics";
 
 import "./index.css";
 import AdminOnlyAllowed from "./utils/AdminOnlyAllowed";
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
               {
                 path: "/dashboard/staff/edit/:id",
                 element: <AddStaff isEditing={true} />,
+              },
+              {
+                path: "/dashboard/analytics",
+                element: <Analytics />,
               },
               {
                 path: "/dashboard/settings",

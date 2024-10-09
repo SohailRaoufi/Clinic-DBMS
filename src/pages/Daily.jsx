@@ -58,7 +58,7 @@ export default function Staff() {
     });
 
     if (response.success) {
-      setAppointments((prev) => prev.filter((a) => a.id !== id));
+      setDaily((prev) => prev.filter((a) => a.id !== id));
     } else {
       console.error("Could not delete the daily");
     }
@@ -187,7 +187,7 @@ export default function Staff() {
                           variant="text"
                           size="sm"
                           className="font-medium"
-                          onClick={handleDelete}
+                          onClick={() => handleDelete(daily.id)}
                         >
                           Delete
                         </Button>
