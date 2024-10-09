@@ -39,6 +39,7 @@ export default function Appointment() {
 
     if (response.success) {
       setAppointments((prev) => prev.filter((a) => a.id !== id));
+      setfilteredAppointment((prev) => prev.filter((a) => a.id !== id));
     } else {
       console.error("Could not delete the appointment");
     }
@@ -71,7 +72,7 @@ export default function Appointment() {
 
       setfilteredAppointment(filterd);
     }
-  }, [search]);
+  }, [search, appointments]);
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
