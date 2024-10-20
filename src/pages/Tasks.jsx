@@ -7,16 +7,16 @@ import Mypagination from "../components/MyPagination";
 import { Link } from "react-router-dom";
 import "../assets/styles/tasks.css";
 
-export default function Appointment() {
+export default function Task() {
   const [tasks, setTasks] = useState([]);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  const [search, setSearch] = useState("");
   const [filteredTasks, setfilteredTasks] = useState([]);
-
-  const headers = ["Status", "Staff", "Tasks", "Detail"];
+  console.log(filteredTasks);
+  
+  const headers = ["Status", "Staff", "Task","Due To", "Detail"];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -30,7 +30,7 @@ export default function Appointment() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleDelete = async (id) => {
-    const response = await del(`/api/appointment/${id}/`, {
+    const response = await del(`/api/tasks/${id}/`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -46,7 +46,7 @@ export default function Appointment() {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const response = await get(`/api/appointment/?day=${date}`, {
+      const response = await get(`/api/tasks/?date=${date}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -61,28 +61,12 @@ export default function Appointment() {
     fetchTasks();
   }, [date]);
 
-  useEffect(() => {
-    if (search.trim() === "") {
-        setfilteredTasks(tasks);
-    } else {
-      const filterd = tasks.filter((a) =>
-        a.task.toLowerCase().includes(search.trim().toLowerCase())
-      );
-
-      setfilteredTasks(filterd);
-    }
-  }, [search, tasks]);
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
   };
   return (
     <div>
-      <NavbarSearch
-        name={"Appointment"}
-        search={search}
-        setSearch={setSearch}
-      />
       <div className="flex-col table relative patient-table">
         <div className="table-head">
           <h1 className="head-text">All Tasks</h1>
@@ -131,27 +115,60 @@ export default function Appointment() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((patient, index) => (
-                    <tr key={patient.id} className="even:bg-blue-gray-50/50">
-                      {Object.keys(patient)
-                        .filter((key) => key !== "id")
-                        .map((key) => (
-                          <td key={key} className="p-4">
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {patient[key]}
-                            </Typography>
-                          </td>
-                        ))}
+                  {currentItems.map((task, index) => (
+                    <tr key={task.id} className="even:bg-blue-gray-50/50">
+                        <td key={index + 1} className="p-4">
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                        >
+                            {task.status ? "Done" : "Pending"}
+                        </Typography>
+                        </td>
+                        <td key={index + 1} className="p-4">
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                        >
+                            {task.assigned_to_name}
+                        </Typography>
+                        </td>
+                        <td key={index + 1} className="p-4">
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                        >
+                            {task.title}
+                        </Typography>
+                        </td>
+                        <td key={index + 1} className="p-4">
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                        >
+                            {task.due_to}
+                        </Typography>
+                        </td>
+                        <td key={index + 1} className="p-4">
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                        >
+                            {task.description !== "" ? task.description : "N/A"}
+                        </Typography>
+                        </td>
+                        
                       <td className="">
                         <Button
                           variant="text"
                           size="sm"
                           className="font-medium"
-                          onClick={(e) => handleDelete(patient.id)}
+                          onClick={(e) => handleDelete(task.id)}
                         >
                           Delete
                         </Button>

@@ -12,7 +12,7 @@ type ReturnType = {
 };
 
 // Base URL for your API
-const BASE_URL : any = `http://${import.meta.env.VITE_BACKEND_URL}`;
+const BASE_URL = `http://${import.meta.env.VITE_BACKEND_URL}`;
 
 // Helper function to build URL with query parameters
 const buildUrl = (path: string, params?: Record<string, string>): string => {

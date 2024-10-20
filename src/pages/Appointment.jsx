@@ -1,5 +1,4 @@
 import { NavbarSearch } from "../components/Navbar";
-import { CalendarIcon, PlusIcon } from "@heroicons/react/16/solid";
 import React, { useState, useEffect } from "react";
 import { get, del } from "../utils/ApiFetch";
 import { Card, Typography, Button, Input } from "@material-tailwind/react";

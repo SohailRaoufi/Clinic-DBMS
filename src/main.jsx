@@ -106,10 +106,7 @@ const router = createBrowserRouter([
                 path: "/dashboard/tasks/add",
                 element: <AddTask/>,
               },
-              {
-                path: "/dashboard/tasks/edit/:id",
-                element: <AddTask isEditing = {true}/>,
-              },
+              
               {
                 path: "/dashboard/staff",
                 element: <Staff />,

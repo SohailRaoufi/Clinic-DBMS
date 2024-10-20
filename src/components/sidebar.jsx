@@ -134,7 +134,25 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        
+        {!user.is_admin && (
+          <Accordion open={open === 9}>
+          <Link to="/dashboard/daily">
+            <ListItem className="p-0" selected={open === 9}>
+              <AccordionHeader
+                onClick={() => handleOpen(9)}
+                className="border-b-0 p-3"
+              >
+                <ListItemPrefix>
+                  <PencilSquareIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  My Tasks
+                </Typography>
+              </AccordionHeader>
+            </ListItem>
+          </Link>
+        </Accordion>
+        )}
         {user.is_admin && (
           <>
           <Accordion open={open === 8}>
