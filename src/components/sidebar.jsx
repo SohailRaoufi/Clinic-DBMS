@@ -8,19 +8,17 @@ import {
   ListItemPrefix,
   Accordion,
   AccordionHeader,
-  AccordionBody,
 } from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
   ShoppingBagIcon,
-  UserCircleIcon,
   Cog6ToothIcon,
   PowerIcon,
   ChatBubbleLeftRightIcon,
   ClockIcon,
   UsersIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { jwtDecode } from "jwt-decode";
 
 import "./styles/sidebar.css";
@@ -119,11 +117,11 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion open={open === 4}>
+        <Accordion open={open === 5}>
           <Link to="/dashboard/daily">
-            <ListItem className="p-0" selected={open === 4}>
+            <ListItem className="p-0" selected={open === 5}>
               <AccordionHeader
-                onClick={() => handleOpen(4)}
+                onClick={() => handleOpen(5)}
                 className="border-b-0 p-3"
               >
                 <ListItemPrefix>
@@ -136,13 +134,31 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
+        
         {user.is_admin && (
           <>
-            <Accordion open={open === 5}>
+          <Accordion open={open === 8}>
+          <Link to="/dashboard/tasks">
+            <ListItem className="p-0" selected={open === 8}>
+              <AccordionHeader
+                onClick={() => handleOpen(8)}
+                className="border-b-0 p-3"
+              >
+                <ListItemPrefix>
+                  <PencilSquareIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  {user.is_admin ? "All Tasks" : "My Tasks"}
+                </Typography>
+                </AccordionHeader>
+              </ListItem>
+            </Link>
+          </Accordion>
+            <Accordion open={open === 6}>
               <Link to="/dashboard/staff">
-                <ListItem className="p-0" selected={open === 5}>
+                <ListItem className="p-0" selected={open === 6}>
                   <AccordionHeader
-                    selected={open === 5}
+                    selected={open === 6}
                     className="border-b-0 p-3"
                   >
                     <ListItemPrefix>
@@ -158,11 +174,11 @@ export function NavbarSimple() {
                 </ListItem>
               </Link>
             </Accordion>
-            <Accordion open={open === 6}>
+            <Accordion open={open === 7}>
               <Link to="/dashboard/analytics">
-                <ListItem className="p-0" selected={open === 6}>
+                <ListItem className="p-0" selected={open === 7}>
                   <AccordionHeader
-                    selected={open === 6}
+                    selected={open === 7}
                     className="border-b-0 p-3"
                   >
                     <ListItemPrefix>

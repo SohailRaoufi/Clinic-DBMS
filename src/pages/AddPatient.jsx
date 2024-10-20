@@ -1,17 +1,8 @@
 import {
   Button,
   Typography,
-  Card,
   Input,
   Checkbox,
-  Option,
-  Select,
-  Dialog,
-  Textarea,
-  IconButton,
-  DialogBody,
-  DialogHeader,
-  DialogFooter,
 } from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
