@@ -1,11 +1,9 @@
-import { NavbarSearch } from "../components/Navbar";
 import { useState, useEffect } from "react";
-import { get, del } from "../utils/ApiFetch";
-import { Card, Typography, Button, Input } from "@material-tailwind/react";
+import { get, patch } from "../utils/ApiFetch";
+import { Card, Typography,Input, Checkbox } from "@material-tailwind/react";
 import Mypagination from "../components/MyPagination";
 
-import { Link } from "react-router-dom";
-import "../assets/styles/tasks.css";
+import "../assets/styles/Mytasks.css";
 
 export default function Task() {
   const [tasks, setTasks] = useState([]);
@@ -14,9 +12,10 @@ export default function Task() {
   const [itemsPerPage] = useState(10);
 
   const [filteredTasks, setfilteredTasks] = useState([]);
-  console.log(filteredTasks);
+
+//   const [status, setStatus] = useState(null);
   
-  const headers = ["Status", "Staff", "Task","Due To", "Detail"];
+  const headers = ["Status", "Assigned By", "Task","Due To", "Detail"];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -29,20 +28,6 @@ export default function Task() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = async (id) => {
-    const response = await del(`/api/tasks/${id}/`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    if (response.success) {
-        setTasks((prev) => prev.filter((a) => a.id !== id));
-        setfilteredTasks((prev) => prev.filter((a) => a.id !== id));
-    } else {
-      console.error("Could not delete the appointment");
-    }
-  };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -60,6 +45,32 @@ export default function Task() {
     };
     fetchTasks();
   }, [date]);
+  const handleChange = async (id,status) => {
+
+    const updatedStatus = !status;
+    
+    const data = {
+        status:updatedStatus
+    }
+    
+    const response = await patch(`/api/tasks/${id}/`, {
+        headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body:data
+    });
+
+    if (!response.success){
+        console.error("Not Updated!")
+        return;
+    }else{
+        const data = response.data;
+        console.log(data);
+        setTasks(data);
+        return;
+    }
+    
+  }
 
 
   const handleDateChange = (e) => {
@@ -71,14 +82,11 @@ export default function Task() {
         <div className="table-head">
           <h1 className="head-text">All Tasks</h1>
           <div className="flex items-center">
-            <Typography className="filter-task">
+            <Typography className="filter-mytask">
               Filter By Date:{" "}
               <Input value={date} onChange={handleDateChange} type="date" />
             </Typography>
 
-            <Link to="/dashboard/tasks/add">
-              <Button className="add-appointment">Add Task</Button>
-            </Link>
           </div>
         </div>
         <div className="table-body">
@@ -103,15 +111,7 @@ export default function Task() {
                           </Typography>
                         </th>
                       ))}
-                    <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal leading-none opacity-70"
-                      >
-                        Action
-                      </Typography>
-                    </th>
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -120,60 +120,50 @@ export default function Task() {
                         <td key={index + 1} className="p-4">
                         <Typography
                             variant="small"
-                            color={task.status ? "green" : "orange"}
+                            color="blue-gray"
                             className="font-normal"
-
                         >
-                            {task.status ? "Done" : "Pending"}
+                            <Checkbox checked={task.status} value={task.status} name="status" onClick={ () => handleChange(task.id,task.status)} />
                         </Typography>
                         </td>
                         <td key={index + 1} className="p-4">
                         <Typography
                             variant="small"
                             color="blue-gray"
-                            className="font-normal"
+                            className={`font-normal ${task.status ? 'line-through' : ''}`} // Add line-through class if status is true
                         >
-                            {task.assigned_to_name}
+                            {task.assigned_by_name}
                         </Typography>
-                        </td>
-                        <td key={index + 1} className="p-4">
+                    </td>
+                    <td key={index + 1} className="p-4">
                         <Typography
                             variant="small"
                             color="blue-gray"
-                            className="font-normal"
+                            className={`font-normal ${task.status ? 'line-through' : ''}`} // Add line-through class if status is true
                         >
                             {task.title}
                         </Typography>
-                        </td>
-                        <td key={index + 1} className="p-4">
+                    </td>
+                    <td key={index + 1} className="p-4">
                         <Typography
                             variant="small"
                             color="blue-gray"
-                            className="font-normal"
+                            className={`font-normal ${task.status ? 'line-through' : ''}`} // Add line-through class if status is true
                         >
                             {task.due_to}
                         </Typography>
-                        </td>
-                        <td key={index + 1} className="p-4">
+                    </td>
+                    <td key={index + 1} className="p-4">
                         <Typography
                             variant="small"
                             color="blue-gray"
-                            className="font-normal"
+                            className={`font-normal ${task.status ? 'line-through' : ''}`} // Add line-through class if status is true
                         >
                             {task.description !== "" ? task.description : "N/A"}
                         </Typography>
-                        </td>
-                        
-                      <td className="">
-                        <Button
-                          variant="text"
-                          size="sm"
-                          className="font-medium"
-                          onClick={(e) => handleDelete(task.id)}
-                        >
-                          Delete
-                        </Button>
-                      </td>
+                    </td>
+
+                    
                     </tr>
                   ))}
                 </tbody>

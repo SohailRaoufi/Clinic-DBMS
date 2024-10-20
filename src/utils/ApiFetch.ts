@@ -108,6 +108,26 @@ export const put = async (
   return handleResponse(response);
 };
 
+// Patch Method
+export const patch = async (
+  path: string,
+  options: RequestOptions = {}
+): Promise<ReturnType> => {
+  const { headers = {}, body } = options;
+  const url = buildUrl(path);
+
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      ...headers,
+    },
+    body: JSON.stringify(body),
+  });
+
+  return handleResponse(response);
+};
+
 // DELETE request
 export const del = async (
   path: string,

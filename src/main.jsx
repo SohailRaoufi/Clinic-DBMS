@@ -24,6 +24,7 @@ import PrivateRoute from "./utils/PrivateRouter";
 import Analytics from "./pages/Analytics";
 import Tasks from "./pages/Tasks"
 import AddTask from "./pages/AddTask"
+import MyTasks from "./pages/MyTasks"
 
 import "./index.css";
 import AdminOnlyAllowed from "./utils/AdminOnlyAllowed";
@@ -94,7 +95,10 @@ const router = createBrowserRouter([
             path: "/dashboard/daily/edit/:id",
             element: <AddDaily isEditing={true} />,
           },
-
+          {
+            path: "/dashboard/mytasks",
+            element: <MyTasks/>,
+          },
           {
             element: <AdminOnlyAllowed />,
             children: [

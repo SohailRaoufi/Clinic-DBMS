@@ -1,0 +1,20 @@
+.add-appointment {
+    position: absolute !important;
+    right: 0;
+    top: 1rem;
+}
+.filter-mytask {
+width: 10rem;
+display: flex;
+gap: 1rem;
+text-wrap: nowrap;
+position: absolute;
+top: 1rem;
+right: 10rem;
+align-items: center;
+}
+
+.line-through {
+    text-decoration: line-through;
+    color: gray;
+}

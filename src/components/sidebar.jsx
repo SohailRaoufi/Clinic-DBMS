@@ -136,7 +136,7 @@ export function NavbarSimple() {
         </Accordion>
         {!user.is_admin && (
           <Accordion open={open === 9}>
-          <Link to="/dashboard/daily">
+          <Link to="/dashboard/mytasks">
             <ListItem className="p-0" selected={open === 9}>
               <AccordionHeader
                 onClick={() => handleOpen(9)}
