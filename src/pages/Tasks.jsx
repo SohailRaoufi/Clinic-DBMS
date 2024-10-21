@@ -12,9 +12,10 @@ export default function Task() {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [users, setUsers] = useState([]);
+  const [filterUser, setFilterUser] = useState("all")
 
   const [filteredTasks, setfilteredTasks] = useState([]);
-  console.log(filteredTasks);
   
   const headers = ["Status", "Staff", "Task","Due To", "Detail"];
 
@@ -61,6 +62,44 @@ export default function Task() {
     fetchTasks();
   }, [date]);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+        try {
+          const response = await get("api/chats/", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+          if (!response.success) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.data;
+          setUsers(data);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      };
+
+      fetchUsers();
+}, [])
+
+
+
+useEffect(() => {
+  const handleStaffChange = () => {
+    if(filterUser === "all"){
+        setfilteredTasks(tasks);
+    }else{
+        const filterd = tasks.filter((t) => t.assigned_to === Number(filterUser));
+        console.log(filterd);
+        
+        setfilteredTasks(filterd);
+    }
+    
+ }
+ handleStaffChange();
+}, [filterUser, tasks])
+
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
@@ -71,6 +110,21 @@ export default function Task() {
         <div className="table-head">
           <h1 className="head-text">All Tasks</h1>
           <div className="flex items-center">
+          
+          <div className="users">
+          <Typography>Filter By Staff: </Typography>
+            <select
+            onChange={(e) => setFilterUser(e.target.value)}
+            name="assigned_to"
+            required
+            className="mt-1px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+            <option value="all">All</option>
+            {users.map((user) => (
+                <option key={user.id} value={user.id} >{user.username}</option>
+            ))}
+            </select>
+            </div>
             <Typography className="filter-task">
               Filter By Date:{" "}
               <Input value={date} onChange={handleDateChange} type="date" />
@@ -116,7 +170,7 @@ export default function Task() {
                 </thead>
                 <tbody>
                   {currentItems.map((task, index) => (
-                    <tr key={task.id} className="even:bg-blue-gray-50/50">
+                    <tr key={index + 1} className="even:bg-blue-gray-50/50">
                         <td key={index + 1} className="p-4">
                         <Typography
                             variant="small"

@@ -31,7 +31,7 @@ export default function Task() {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const response = await get(`/api/tasks/?date=${date}`, {
+      const response = await get(`/api/tasks/userTasks/?date=${date}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -60,15 +60,22 @@ export default function Task() {
         body:data
     });
 
-    if (!response.success){
-        console.error("Not Updated!")
-        return;
-    }else{
-        const data = response.data;
-        console.log(data);
-        setTasks(data);
-        return;
+    if (!response.success) {
+      console.error("Not Updated!");
+      return;
     }
+    
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, status: updatedStatus } : task
+      )
+    );
+
+    setfilteredTasks((prevFilteredTasks) =>
+      prevFilteredTasks.map((task) =>
+        task.id === id ? { ...task, status: updatedStatus } : task
+      )
+    );
     
   }
 
@@ -116,7 +123,7 @@ export default function Task() {
                 </thead>
                 <tbody>
                   {currentItems.map((task, index) => (
-                    <tr key={task.id} className="even:bg-blue-gray-50/50">
+                    <tr key={index + 1} className="even:bg-blue-gray-50/50">
                         <td key={index + 1} className="p-4">
                         <Typography
                             variant="small"
