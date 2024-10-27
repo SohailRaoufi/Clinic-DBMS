@@ -1,5 +1,5 @@
 import { Typography, Input, Button } from "@material-tailwind/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { post } from "../utils/ApiFetch";
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +7,7 @@ import "../assets/styles/addappointment.css";
 
 export default function AddAppointment() {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
   
 
   const [formData, setFormData] = useState({
@@ -36,7 +37,8 @@ export default function AddAppointment() {
     if (response.success) {
       navigate("/dashboard/appointments/")
     } else {
-      console.error("Failed to create appointment");
+      setError(response.data["Failed"]) 
+      console.error(response.data);
     }
   };
 
@@ -46,6 +48,7 @@ export default function AddAppointment() {
         Add Appointment
       </Typography>
       <div className="form-appointment shadow-lg rounded-lg">
+        <Typography className=" text-red-500">{error != "" ? error : ""}</Typography>
         <form onSubmit={handleSubmit}>
           <Typography>Patient Name</Typography>
           <Input
