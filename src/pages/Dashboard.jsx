@@ -1,23 +1,38 @@
-import SimpleCard from "../components/MyCard";
-import "../components/styles/mycard.css";
-import "../assets/styles/dashboard.css";
-import { NavbarSearch } from "../components/Navbar";
+import '../components/styles/mycard.css';
+import '../assets/styles/dashboard.css';
+import { NavbarSearch } from '../components/Navbar';
+import JalaliDateInput from '../components/jalaliDate';
 
-import { Button, Input, Typography, Card } from "@material-tailwind/react";
-import Mypagination from "../components/MyPagination";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { get, del } from "../utils/ApiFetch";
+import { Button, Typography, Card } from '@material-tailwind/react';
+import Mypagination from '../components/MyPagination';
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { get, del } from '../utils/ApiFetch';
 
 export default function Dashboard() {
   const [appointments, setAppointments] = useState([]);
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [jalaliDate, setJalaliDate] = useState(() => {
+    const today = new Date(date);
+    const persianDate = new Intl.DateTimeFormat('fa-AF', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      calendar: 'persian',
+    }).format(today);
+
+    // Convert Persian digits to English and format
+    const persianToEnglish = persianDate.replace(/[۰-۹]/g, (d) =>
+      '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)
+    );
+    return persianToEnglish.split('/').join('/');
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [filteredAppointment, setfilteredAppointment] = useState([]);
 
-  const headers = ["Time", "Day", "Patient"];
+  const headers = ['Time', 'Day', 'Patient'];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -33,14 +48,14 @@ export default function Dashboard() {
   const handleDelete = async (id) => {
     const response = await del(`/api/appointment/${id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
     if (response.success) {
       setAppointments((prev) => prev.filter((a) => a.id !== id));
     } else {
-      console.error("Could not delete the appointment");
+      console.error('Could not delete the appointment');
     }
   };
 
@@ -48,21 +63,40 @@ export default function Dashboard() {
     const fetchAppointments = async () => {
       const response = await get(`/api/appointment/?day=${date}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       if (response.success) {
+        response.data = response.data.map((appointment) => {
+          const dateFormatter = new Intl.DateTimeFormat('fa-AF', {
+            month: 'long',
+            year: 'numeric',
+            day: 'numeric',
+          });
+
+          const appointmentDate = new Date(appointment.day);
+          const [{ value: month }, , { value: day }, , { value: year }] =
+            dateFormatter.formatToParts(appointmentDate);
+
+          const afghanDate = `${month} ${day}  ${year}`;
+          console.log(afghanDate);
+
+          return {
+            ...appointment,
+            day: afghanDate,
+          };
+        });
         setAppointments(response.data);
         setfilteredAppointment(response.data);
       } else {
-        console.error("Failed to fetch appointments");
+        console.error('Failed to fetch appointments');
       }
     };
     fetchAppointments();
   }, [date]);
 
   useEffect(() => {
-    if (search.trim() === "") {
+    if (search.trim() === '') {
       setfilteredAppointment(appointments);
     } else {
       const filterd = appointments.filter((a) =>
@@ -71,16 +105,26 @@ export default function Dashboard() {
 
       setfilteredAppointment(filterd);
     }
-  }, [search]);
+  }, [search, appointments]);
 
-  const handleDateChange = (e) => {
-    setDate(e.target.value);
+  const handleDateChange = (dateObject) => {
+    // Ensure dateObject is a valid DatePicker value
+    if (dateObject && dateObject.format) {
+      // Add one day to account for timezone offset
+      const date = dateObject.toDate();
+      date.setDate(date.getDate() + 1);
+      const gregorianDate = date.toISOString().split('T')[0];
+      setDate(gregorianDate);
+      console.log(gregorianDate);
+
+      setJalaliDate(dateObject.format('YYYY/MM/DD')); // Update displayed Jalali date if needed
+    }
   };
 
   return (
     <>
       <NavbarSearch
-        name={"Appointment"}
+        name={'Appointment'}
         search={search}
         setSearch={setSearch}
       />
@@ -89,8 +133,12 @@ export default function Dashboard() {
         <div className="relative table-head">
           <h1>Appointments</h1>
           <Typography className="filter-dash">
-            Filter By Date:{" "}
-            <Input value={date} onChange={handleDateChange} type="date" />
+            Filter By Date:{' '}
+            <JalaliDateInput
+              onChange={handleDateChange}
+              width={'13rem'}
+              value={jalaliDate}
+            />
           </Typography>
           <Link to="/dashboard/appointment/add">
             <Button className=" !absolute top-0 right-0">
@@ -105,7 +153,7 @@ export default function Dashboard() {
                 <thead>
                   <tr>
                     {headers
-                      .filter((head) => head != "id")
+                      .filter((head) => head != 'id')
                       .map((head) => (
                         <th
                           key={head}
@@ -132,19 +180,30 @@ export default function Dashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((patient, index) => (
+                  {currentItems.map((patient) => (
                     <tr key={patient.id} className="even:bg-blue-gray-50/50">
                       {Object.keys(patient)
-                        .filter((key) => key !== "id")
+                        .filter((key) => key !== 'id')
                         .map((key) => (
                           <td key={key} className="p-4">
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {patient[key]}
-                            </Typography>
+                            {key === 'day' ? (
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                                style={{ direction: 'rtl' }}
+                              >
+                                {patient[key]}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
+                                {patient[key]}
+                              </Typography>
+                            )}
                           </td>
                         ))}
                       <td className="">
@@ -152,7 +211,7 @@ export default function Dashboard() {
                           variant="text"
                           size="sm"
                           className="font-medium"
-                          onClick={(e) => handleDelete(patient.id)}
+                          onClick={() => handleDelete(patient.id)}
                         >
                           Delete
                         </Button>

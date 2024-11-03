@@ -1,22 +1,38 @@
-import { NavbarSearch } from "../components/Navbar";
-import React, { useState, useEffect } from "react";
-import { get, del } from "../utils/ApiFetch";
-import { Card, Typography, Button, Input } from "@material-tailwind/react";
-import Mypagination from "../components/MyPagination";
+import { NavbarSearch } from '../components/Navbar';
+import { useState, useEffect } from 'react';
+import { get, del } from '../utils/ApiFetch';
+import { Card, Typography, Button } from '@material-tailwind/react';
+import Mypagination from '../components/MyPagination';
+import JalaliDateInput from '../components/jalaliDate';
 
-import { Link } from "react-router-dom";
-import "../assets/styles/appointment.css";
+import { Link } from 'react-router-dom';
+import '../assets/styles/appointment.css';
 
 export default function Appointment() {
   const [appointments, setAppointments] = useState([]);
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [jalaliDate, setJalaliDate] = useState(() => {
+    const today = new Date(date);
+    const persianDate = new Intl.DateTimeFormat('fa-AF', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      calendar: 'persian',
+    }).format(today);
+
+    // Convert Persian digits to English and format
+    const persianToEnglish = persianDate.replace(/[۰-۹]/g, (d) =>
+      '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)
+    );
+    return persianToEnglish.split('/').join('/');
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [filteredAppointment, setfilteredAppointment] = useState([]);
 
-  const headers = ["Time", "Day", "Patient"];
+  const headers = ['Time', 'Day', 'Patient'];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -32,7 +48,7 @@ export default function Appointment() {
   const handleDelete = async (id) => {
     const response = await del(`/api/appointment/${id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
@@ -40,7 +56,7 @@ export default function Appointment() {
       setAppointments((prev) => prev.filter((a) => a.id !== id));
       setfilteredAppointment((prev) => prev.filter((a) => a.id !== id));
     } else {
-      console.error("Could not delete the appointment");
+      console.error('Could not delete the appointment');
     }
   };
 
@@ -48,21 +64,40 @@ export default function Appointment() {
     const fetchAppointments = async () => {
       const response = await get(`/api/appointment/?day=${date}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       if (response.success) {
+        response.data = response.data.map((appointment) => {
+          const dateFormatter = new Intl.DateTimeFormat('fa-AF', {
+            month: 'long',
+            year: 'numeric',
+            day: 'numeric',
+          });
+
+          const appointmentDate = new Date(appointment.day);
+          const [{ value: month }, , { value: day }, , { value: year }] =
+            dateFormatter.formatToParts(appointmentDate);
+
+          const afghanDate = `${month} ${day}  ${year}`;
+          console.log(afghanDate);
+
+          return {
+            ...appointment,
+            day: afghanDate,
+          };
+        });
         setAppointments(response.data);
         setfilteredAppointment(response.data);
       } else {
-        console.error("Failed to fetch appointments");
+        console.error('Failed to fetch appointments');
       }
     };
     fetchAppointments();
   }, [date]);
 
   useEffect(() => {
-    if (search.trim() === "") {
+    if (search.trim() === '') {
       setfilteredAppointment(appointments);
     } else {
       const filterd = appointments.filter((a) =>
@@ -73,13 +108,24 @@ export default function Appointment() {
     }
   }, [search, appointments]);
 
-  const handleDateChange = (e) => {
-    setDate(e.target.value);
+  const handleDateChange = (dateObject) => {
+    // Ensure dateObject is a valid DatePicker value
+    if (dateObject && dateObject.format) {
+      // Add one day to account for timezone offset
+      const date = dateObject.toDate();
+      date.setDate(date.getDate() + 1);
+      const gregorianDate = date.toISOString().split('T')[0];
+      setDate(gregorianDate);
+      console.log(gregorianDate);
+
+      setJalaliDate(dateObject.format('YYYY/MM/DD')); // Update displayed Jalali date if needed
+    }
   };
+
   return (
     <div>
       <NavbarSearch
-        name={"Appointment"}
+        name={'Appointment'}
         search={search}
         setSearch={setSearch}
       />
@@ -88,8 +134,13 @@ export default function Appointment() {
           <h1 className="head-text">All Appointments</h1>
           <div className="flex items-center">
             <Typography className="filter">
-              Filter By Date:{" "}
-              <Input value={date} onChange={handleDateChange} type="date" />
+              Filter By Date:{' '}
+              {/* <Input value={date} onChange={handleDateChange} type="date" /> */}
+              <JalaliDateInput
+                onChange={handleDateChange}
+                width={'13rem'}
+                value={jalaliDate}
+              />
             </Typography>
 
             <Link to="/dashboard/appointment/add">
@@ -104,7 +155,7 @@ export default function Appointment() {
                 <thead>
                   <tr>
                     {headers
-                      .filter((head) => head != "id")
+                      .filter((head) => head != 'id')
                       .map((head) => (
                         <th
                           key={head}
@@ -131,19 +182,29 @@ export default function Appointment() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((patient, index) => (
+                  {currentItems.map((patient) => (
                     <tr key={patient.id} className="even:bg-blue-gray-50/50">
                       {Object.keys(patient)
-                        .filter((key) => key !== "id")
+                        .filter((key) => key !== 'id')
                         .map((key) => (
                           <td key={key} className="p-4">
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal"
-                            >
-                              {patient[key]}
-                            </Typography>
+                            {key === 'day' ? (
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal dateShamsi"
+                              >
+                                {patient[key]}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-normal"
+                              >
+                                {patient[key]}
+                              </Typography>
+                            )}
                           </td>
                         ))}
                       <td className="">
@@ -151,7 +212,7 @@ export default function Appointment() {
                           variant="text"
                           size="sm"
                           className="font-medium"
-                          onClick={(e) => handleDelete(patient.id)}
+                          onClick={() => handleDelete(patient.id)}
                         >
                           Delete
                         </Button>

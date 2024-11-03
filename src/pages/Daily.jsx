@@ -1,19 +1,18 @@
-import { NavbarSearch } from "../components/Navbar";
-import { Button, Card, Typography, Input } from "@material-tailwind/react";
-import { PlusIcon } from "@heroicons/react/16/solid";
-import { useState, useEffect } from "react";
+import { Button, Card, Typography, Input } from '@material-tailwind/react';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import { useState, useEffect } from 'react';
 
-import { get, del } from "../utils/ApiFetch";
+import { get, del } from '../utils/ApiFetch';
 
-import "../assets/styles/patientPage.css";
+import '../assets/styles/patientPage.css';
 
-import { Link } from "react-router-dom";
-import Mypagination from "../components/MyPagination";
+import { Link } from 'react-router-dom';
+import Mypagination from '../components/MyPagination';
 
 export default function Staff() {
   const [daily, setDaily] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [itemsPerPage] = useState(10);
 
   // Calculate the indexes for the current page
@@ -31,7 +30,7 @@ export default function Staff() {
     const get_data = async () => {
       const response = await get(`/api/daily/?day=${date}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       if (!response.success) {
@@ -44,6 +43,7 @@ export default function Staff() {
         console.log(`Unexpected data format: ${data}`);
         return;
       }
+
       setDaily(data);
     };
 
@@ -53,14 +53,14 @@ export default function Staff() {
   const handleDelete = async (id) => {
     const response = await del(`/api/daily/${id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
     if (response.success) {
       setDaily((prev) => prev.filter((a) => a.id !== id));
     } else {
-      console.error("Could not delete the daily");
+      console.error('Could not delete the daily');
     }
   };
 
@@ -73,15 +73,15 @@ export default function Staff() {
       <div className="flex-col table patient-table">
         <div className="table-head">
           <Typography
-            style={{ marginTop: "0.3rem", marginRight: "1rem" }}
+            style={{ marginTop: '0.3rem', marginRight: '1rem' }}
             className="filter"
           >
-            Filter By Date:{" "}
+            Filter By Date:{' '}
             <Input value={date} onChange={handleDateChange} type="date" />
           </Typography>
           <Link to="/dashboard/daily/add">
             <Button className="patient-btn">
-              <PlusIcon style={{ height: "18px" }} />
+              <PlusIcon style={{ height: '18px' }} />
               Add Daily Patient
             </Button>
           </Link>
@@ -168,6 +168,7 @@ export default function Staff() {
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
+                          style={{ direction: 'rtl' }}
                         >
                           {daily.day}
                         </Typography>

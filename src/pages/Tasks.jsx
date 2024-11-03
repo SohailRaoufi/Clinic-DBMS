@@ -1,30 +1,26 @@
-import { NavbarSearch } from "../components/Navbar";
-import { useState, useEffect } from "react";
-import { get, del } from "../utils/ApiFetch";
-import { Card, Typography, Button, Input } from "@material-tailwind/react";
-import Mypagination from "../components/MyPagination";
+import { useState, useEffect } from 'react';
+import { get, del } from '../utils/ApiFetch';
+import { Card, Typography, Button, Input } from '@material-tailwind/react';
+import Mypagination from '../components/MyPagination';
 
-import { Link } from "react-router-dom";
-import "../assets/styles/tasks.css";
+import { Link } from 'react-router-dom';
+import '../assets/styles/tasks.css';
 
 export default function Task() {
   const [tasks, setTasks] = useState([]);
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [users, setUsers] = useState([]);
-  const [filterUser, setFilterUser] = useState("all")
+  const [filterUser, setFilterUser] = useState('all');
 
   const [filteredTasks, setfilteredTasks] = useState([]);
-  
-  const headers = ["Status", "Staff", "Task","Due To", "Detail"];
+
+  const headers = ['Status', 'Staff', 'Task', 'Due To', 'Detail'];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredTasks.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredTasks.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
 
@@ -33,15 +29,15 @@ export default function Task() {
   const handleDelete = async (id) => {
     const response = await del(`/api/tasks/${id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
     if (response.success) {
-        setTasks((prev) => prev.filter((a) => a.id !== id));
-        setfilteredTasks((prev) => prev.filter((a) => a.id !== id));
+      setTasks((prev) => prev.filter((a) => a.id !== id));
+      setfilteredTasks((prev) => prev.filter((a) => a.id !== id));
     } else {
-      console.error("Could not delete the appointment");
+      console.error('Could not delete the appointment');
     }
   };
 
@@ -49,14 +45,14 @@ export default function Task() {
     const fetchTasks = async () => {
       const response = await get(`/api/tasks/?date=${date}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       if (response.success) {
         setTasks(response.data);
         setfilteredTasks(response.data);
       } else {
-        console.error("Failed to fetch appointments");
+        console.error('Failed to fetch appointments');
       }
     };
     fetchTasks();
@@ -64,42 +60,40 @@ export default function Task() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-        try {
-          const response = await get("api/chats/", {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
-          if (!response.success) {
-            throw new Error("Network response was not ok");
-          }
-          const data = await response.data;
-          setUsers(data);
-        } catch (error) {
-          console.error("Error fetching users:", error);
+      try {
+        const response = await get('api/chats/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        if (!response.success) {
+          throw new Error('Network response was not ok');
         }
-      };
+        const data = await response.data;
+        setUsers(data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
 
-      fetchUsers();
-}, [])
+    fetchUsers();
+  }, []);
 
-
-
-useEffect(() => {
-  const handleStaffChange = () => {
-    if(filterUser === "all"){
+  useEffect(() => {
+    const handleStaffChange = () => {
+      if (filterUser === 'all') {
         setfilteredTasks(tasks);
-    }else{
-        const filterd = tasks.filter((t) => t.assigned_to === Number(filterUser));
+      } else {
+        const filterd = tasks.filter(
+          (t) => t.assigned_to === Number(filterUser)
+        );
         console.log(filterd);
-        
-        setfilteredTasks(filterd);
-    }
-    
- }
- handleStaffChange();
-}, [filterUser, tasks])
 
+        setfilteredTasks(filterd);
+      }
+    };
+    handleStaffChange();
+  }, [filterUser, tasks]);
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
@@ -110,23 +104,24 @@ useEffect(() => {
         <div className="table-head">
           <h1 className="head-text">All Tasks</h1>
           <div className="flex items-center">
-          
-          <div className="users">
-          <Typography>Filter By Staff: </Typography>
-            <select
-            onChange={(e) => setFilterUser(e.target.value)}
-            name="assigned_to"
-            required
-            className="mt-1px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            >
-            <option value="all">All</option>
-            {users.map((user) => (
-                <option key={user.id} value={user.id} >{user.username}</option>
-            ))}
-            </select>
+            <div className="users">
+              <Typography>Filter By Staff: </Typography>
+              <select
+                onChange={(e) => setFilterUser(e.target.value)}
+                name="assigned_to"
+                required
+                className="mt-1px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="all">All</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.username}
+                  </option>
+                ))}
+              </select>
             </div>
             <Typography className="filter-task">
-              Filter By Date:{" "}
+              Filter By Date:{' '}
               <Input value={date} onChange={handleDateChange} type="date" />
             </Typography>
 
@@ -142,7 +137,7 @@ useEffect(() => {
                 <thead>
                   <tr>
                     {headers
-                      .filter((head) => head != "id")
+                      .filter((head) => head != 'id')
                       .map((head) => (
                         <th
                           key={head}
@@ -171,59 +166,59 @@ useEffect(() => {
                 <tbody>
                   {currentItems.map((task, index) => (
                     <tr key={index + 1} className="even:bg-blue-gray-50/50">
-                        <td key={index + 1} className="p-4">
+                      <td key={index + 1} className="p-4">
                         <Typography
-                            variant="small"
-                            color={task.status ? "green" : "orange"}
-                            className="font-normal"
+                          variant="small"
+                          color={task.status ? 'green' : 'orange'}
+                          className="font-normal"
+                        >
+                          {task.status ? 'Done' : 'Pending'}
+                        </Typography>
+                      </td>
+                      <td key={index + 1} className="p-4">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {task.assigned_to_name}
+                        </Typography>
+                      </td>
+                      <td key={index + 1} className="p-4">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {task.title}
+                        </Typography>
+                      </td>
+                      <td key={index + 1} className="p-4">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                          style={{ direction: 'rtl' }}
+                        >
+                          {task.due_to}
+                        </Typography>
+                      </td>
+                      <td key={index + 1} className="p-4">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {task.description !== '' ? task.description : 'N/A'}
+                        </Typography>
+                      </td>
 
-                        >
-                            {task.status ? "Done" : "Pending"}
-                        </Typography>
-                        </td>
-                        <td key={index + 1} className="p-4">
-                        <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                        >
-                            {task.assigned_to_name}
-                        </Typography>
-                        </td>
-                        <td key={index + 1} className="p-4">
-                        <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                        >
-                            {task.title}
-                        </Typography>
-                        </td>
-                        <td key={index + 1} className="p-4">
-                        <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                        >
-                            {task.due_to}
-                        </Typography>
-                        </td>
-                        <td key={index + 1} className="p-4">
-                        <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                        >
-                            {task.description !== "" ? task.description : "N/A"}
-                        </Typography>
-                        </td>
-                        
                       <td className="">
                         <Button
                           variant="text"
                           size="sm"
                           className="font-medium"
-                          onClick={(e) => handleDelete(task.id)}
+                          onClick={() => handleDelete(task.id)}
                         >
                           Delete
                         </Button>

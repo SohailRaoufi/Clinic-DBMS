@@ -13,3 +13,8 @@
   right: 22rem;
   align-items: center;
 }
+
+.dateShamsi {
+  font-size: 1rem;
+  direction: rtl;
+}
