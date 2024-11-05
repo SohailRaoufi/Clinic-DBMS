@@ -32,3 +32,15 @@
 .patient-table {
   margin-top: 7rem;
 }
+.tab {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 5rem;
+}
+
+.table-pag {
+  position: absolute;
+  bottom: -5rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
