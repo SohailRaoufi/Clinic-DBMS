@@ -1,14 +1,13 @@
-import { NavbarSearch } from "../components/Navbar";
-import { Button, Card, Typography } from "@material-tailwind/react";
-import Table from "../components/Table";
-import { PlusIcon } from "@heroicons/react/16/solid";
-import { useState, useEffect } from "react";
+import { NavbarSearch } from '../components/Navbar';
+import { Button, Card, Typography } from '@material-tailwind/react';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import { useState, useEffect } from 'react';
 
-import { get } from "../utils/ApiFetch";
+import { get } from '../utils/ApiFetch';
 
-import "../assets/styles/patientPage.css";
-import { Link } from "react-router-dom";
-import Mypagination from "../components/MyPagination";
+import '../assets/styles/patientPage.css';
+import { Link } from 'react-router-dom';
+import Mypagination from '../components/MyPagination';
 
 export default function Patient() {
   const [patients, setPatients] = useState([]);
@@ -17,7 +16,7 @@ export default function Patient() {
   const [hasNext, setHasNext] = useState(null);
   const [hasPrev, setHasPrev] = useState(null);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [filteredPateint, setfilteredPatient] = useState([]);
   const currentItems = filteredPateint;
 
@@ -29,9 +28,9 @@ export default function Patient() {
 
   useEffect(() => {
     const get_data = async () => {
-      const response = await get("/api/patient/", {
+      const response = await get('/api/patient/', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       if (!response.success) {
@@ -45,6 +44,7 @@ export default function Patient() {
         console.log(`Unexpected data format: ${data}`);
         return;
       }
+
       setCountP(data.count);
       setHasNext(data.next);
       setHasPrev(data.previous);
@@ -58,7 +58,7 @@ export default function Patient() {
   const nextPage = async () => {
     const response = await get(hasNext, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
@@ -81,7 +81,7 @@ export default function Patient() {
   const PrevPage = async () => {
     const response = await get(hasPrev, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
@@ -102,26 +102,26 @@ export default function Patient() {
   };
 
   useEffect(() => {
-    if (search.trim() === "") {
+    if (search.trim() === '') {
       setfilteredPatient(patients);
     }
-  }, [search]);
+  }, [search, patients]);
 
   const searchPatient = async () => {
-    if (search.trim() !== "") {
+    if (search.trim() !== '') {
       const phoneRegex = /^\d+$/;
-      let type = "";
+      let type = '';
       if (phoneRegex.test(search)) {
-        type = "number";
+        type = 'number';
       } else {
-        type = "name";
+        type = 'name';
       }
 
       const response = await get(
         `/api/patient/search/?type=${type}&data=${search}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
@@ -145,7 +145,7 @@ export default function Patient() {
   return (
     <div>
       <NavbarSearch
-        name={"Patient"}
+        name={'Patient'}
         search={search}
         setSearch={setSearch}
         searchPatient={searchPatient}
@@ -155,7 +155,7 @@ export default function Patient() {
         <div className="table-head">
           <Link to="/dashboard/patients/add">
             <Button className="patient-btn">
-              <PlusIcon style={{ height: "18px" }} />
+              <PlusIcon style={{ height: '18px' }} />
               Add Patient
             </Button>
           </Link>

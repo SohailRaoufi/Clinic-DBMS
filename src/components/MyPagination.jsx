@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Button, IconButton } from "@material-tailwind/react";
-import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useState, useEffect } from 'react';
+import { Button, IconButton } from '@material-tailwind/react';
+import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export default function Mypagination({
   totalPages,
@@ -9,37 +9,30 @@ export default function Mypagination({
   hasNext,
   hasPrev,
 }) {
-  const [active, setActive] = useState(currentPage);
-
-  useEffect(() => {
-    setActive(currentPage);
-  }, [currentPage]);
-
-  //for styling the pagination button
   const getItemProps = (index) => ({
-    variant: active === index ? "filled" : "text",
-    color: "gray",
+    variant: currentPage === index ? 'filled' : 'text',
+    color: 'gray',
     onClick: () => {
-      setActive(index);
       paginate(index);
-      if (index < currentPage) hasPrev();
-      else hasNext();
+      if (index > currentPage) {
+        hasNext();
+      } else if (index < currentPage) {
+        hasPrev();
+      }
     },
   });
 
   const next = () => {
-    if (active === totalPages) return;
+    if (currentPage === totalPages) return;
 
-    setActive(active + 1);
-    paginate(active + 1);
+    paginate(currentPage + 1);
     hasNext();
   };
 
   const prev = () => {
-    if (active === 1) return;
+    if (currentPage === 1) return;
 
-    setActive(active - 1);
-    paginate(active - 1);
+    paginate(currentPage - 1);
     hasPrev();
   };
 
@@ -49,7 +42,7 @@ export default function Mypagination({
         variant="text"
         className="flex items-center gap-2"
         onClick={prev}
-        disabled={active === 1}
+        disabled={currentPage === 1}
       >
         <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" /> Previous
       </Button>
@@ -62,7 +55,7 @@ export default function Mypagination({
         variant="text"
         className="flex items-center gap-2"
         onClick={next}
-        disabled={active === totalPages}
+        disabled={currentPage === totalPages}
       >
         Next
         <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
