@@ -1,24 +1,19 @@
-import {
-  Button,
-  Typography,
-  Input,
-  Checkbox,
-} from "@material-tailwind/react";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { Button, Typography, Input, Checkbox } from '@material-tailwind/react';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
-import { useState, useEffect } from "react";
-import { post, put } from "../utils/ApiFetch";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { post, put } from '../utils/ApiFetch';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import json from "../utils/DataObjects.json";
-import AddTreatmentModal from "../components/Treatment";
+import json from '../utils/DataObjects.json';
+import AddTreatmentModal from '../components/Treatment';
 
-import "../assets/styles/addpatient.css";
+import '../assets/styles/addpatient.css';
 export default function AddPatient({ isEditing = false }) {
   const location = useLocation();
   const data = location.state?.data || [];
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [formError, setFormError] = useState();
 
   const navigate = useNavigate();
@@ -27,10 +22,10 @@ export default function AddPatient({ isEditing = false }) {
   const [oldTreatments, setOldTreatments] = useState(data.treatments || []);
   const [treatments, setTreatments] = useState([]);
   const [newTreatment, setNewTreatment] = useState({
-    type_of_treatment: "",
-    teeths: "",
-    amount: "0",
-    amount_paid: "0",
+    type_of_treatment: '',
+    teeths: '',
+    amount: '0',
+    amount_paid: '0',
   });
 
   const [selectedOps, setSelectedOps] = useState([]);
@@ -50,7 +45,7 @@ export default function AddPatient({ isEditing = false }) {
   const get_teeths_from_graph = (teeths) => {
     return Object.keys(teeths)
       .filter((key) => teeths[key] === true)
-      .join(",");
+      .join(',');
   };
   const handleAddTreatment = () => {
     const new_treatment = {
@@ -60,21 +55,21 @@ export default function AddPatient({ isEditing = false }) {
     };
 
     if (
-      new_treatment.amount === "0" ||
+      new_treatment.amount === '0' ||
       Math.sign(new_treatment.amount) == -1 ||
-      new_treatment.name === ""
+      new_treatment.name === ''
     ) {
       setError(
-        "Please Ensure you have Choosen the Treatement and added the Correct Amount!"
+        'Please Ensure you have Choosen the Treatement and added the Correct Amount!'
       );
     } else {
-      setError("");
+      setError('');
       setTreatments([...treatments, new_treatment]);
       setNewTreatment({
-        type_of_treatment: "",
-        teeths: "",
-        amount: "0",
-        amount_paid: "0",
+        type_of_treatment: '',
+        teeths: '',
+        amount: '0',
+        amount_paid: '0',
       });
       setSelectedOps([]);
       updateTeethGraph(teethStateGraph);
@@ -87,36 +82,37 @@ export default function AddPatient({ isEditing = false }) {
 
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === 'checkbox' ? checked : value,
     });
   };
 
   const [formData, setFormData] = useState({
-    name: "",
-    last_name: "",
-    addr: "",
-    job: "",
+    name: '',
+    last_name: '',
+    addr: '',
+    job: '',
     age: 0,
-    phone_no: "",
-    gender: "",
-    martial_status: "",
+    phone_no: '',
+    gender: '',
+    xray: '',
+    martial_status: '',
     hiv: false,
     hcv: false,
     hbs: false,
     pregnancy: false,
     diabetes: false,
     reflux_esophagitis: false,
-    notes: "",
+    notes: '',
   });
 
-  const text_fields = ["name", "last_name", "addr", "job", "phone_no"];
+  const text_fields = ['name', 'last_name', 'addr', 'job', 'phone_no'];
   const checkbox_fields = [
-    "hiv",
-    "hcv",
-    "hbs",
-    "pregnancy",
-    "diabetes",
-    "reflux_esophagitis",
+    'hiv',
+    'hcv',
+    'hbs',
+    'pregnancy',
+    'diabetes',
+    'reflux_esophagitis',
   ];
 
   const handleSubmit = async (e) => {
@@ -135,7 +131,7 @@ export default function AddPatient({ isEditing = false }) {
     if (isEditing) {
       const response = await put(`/api/patient/${data.data.id}/`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: response_data,
       });
@@ -155,7 +151,7 @@ export default function AddPatient({ isEditing = false }) {
           `/api/patient/${data.data.id}/treatments/`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
             body: treat_response_data,
           }
@@ -169,9 +165,9 @@ export default function AddPatient({ isEditing = false }) {
         }
       }
     } else {
-      const response = await post("/api/patient/", {
+      const response = await post('/api/patient/', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: response_data,
       });
@@ -183,7 +179,7 @@ export default function AddPatient({ isEditing = false }) {
       }
     }
 
-    navigate("/dashboard/patients");
+    navigate('/dashboard/patients');
   };
 
   // Detele Treatment
@@ -201,7 +197,7 @@ export default function AddPatient({ isEditing = false }) {
     <div className="h-screen">
       <div className="h-10 p-5">
         <Typography variant="h4" color="blue-gray">
-          {isEditing ? "Edit Patient" : "Add Patient"}
+          {isEditing ? 'Edit Patient' : 'Add Patient'}
         </Typography>
         {formError && (
           <Typography color="red">
@@ -251,6 +247,17 @@ export default function AddPatient({ isEditing = false }) {
                   />
                 </div>
                 <div>
+                  <Typography>X-Ray</Typography>
+                  <Input
+                    onChange={handleChange}
+                    name="xray"
+                    color="teal"
+                    type="text"
+                    value={formData.xray}
+                    required
+                  />
+                </div>
+                <div>
                   <Typography>Gender</Typography>
                   <select
                     onChange={handleChange}
@@ -278,9 +285,10 @@ export default function AddPatient({ isEditing = false }) {
                     <option value="married">Married</option>
                   </select>
                 </div>
+                <div></div>
 
-                {checkbox_fields.map((field) => (
-                  <div>
+                {checkbox_fields.map((field, index) => (
+                  <div key={index + 1}>
                     <Checkbox
                       onChange={handleChange}
                       label={field.toUpperCase()}
@@ -302,7 +310,7 @@ export default function AddPatient({ isEditing = false }) {
                 </div>
                 <div className="column-span-2">
                   <Button type="submit">
-                    {isEditing ? "Update" : "Submit"}
+                    {isEditing ? 'Update' : 'Submit'}
                   </Button>
                 </div>
               </div>
@@ -313,7 +321,7 @@ export default function AddPatient({ isEditing = false }) {
           <Typography
             variant="h5"
             color="blue-gray"
-            style={{ marginBottom: "1rem" }}
+            style={{ marginBottom: '1rem' }}
           >
             Treatments
           </Typography>
@@ -351,13 +359,13 @@ export default function AddPatient({ isEditing = false }) {
                     <TrashIcon
                       className=" cursor-pointer"
                       onClick={() => handleDeteleTreatment(index)}
-                      style={{ height: "20px" }}
+                      style={{ height: '20px' }}
                     />
                   </p>
                 </li>
               ))
             ) : (
-              <p style={{ marginTop: "10rem" }}>No New Treatments!</p>
+              <p style={{ marginTop: '10rem' }}>No New Treatments!</p>
             )}
           </div>
 

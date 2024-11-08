@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import usePagination from "../components/usePagination";
-import Mypagination from "../components/MyPagination";
-import AddTreatmentModal from "../components/Treatment";
-import json from "../utils/DataObjects.json";
+import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import usePagination from '../components/usePagination';
+import Mypagination from '../components/MyPagination';
+import AddTreatmentModal from '../components/Treatment';
+import json from '../utils/DataObjects.json';
 
-import Share from "../components/Share";
+import Share from '../components/Share';
 
-import "../assets/styles/patientdetail.css";
+import '../assets/styles/patientdetail.css';
 import {
   Button,
   Card,
@@ -17,11 +17,11 @@ import {
   TabsBody,
   Tab,
   TabPanel,
-} from "@material-tailwind/react";
+} from '@material-tailwind/react';
 
-import { PencilIcon, TrashIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, ShareIcon } from '@heroicons/react/24/outline';
 
-import { get, del, put, post } from "../utils/ApiFetch";
+import { get, del, put, post } from '../utils/ApiFetch';
 
 export default function PatientDetail() {
   const navigate = useNavigate();
@@ -30,31 +30,32 @@ export default function PatientDetail() {
   const [treatments, setTreatments] = useState([]);
   const [data, setData] = useState([]);
   const [patient, setPatient] = useState({
-    name: "",
-    last_name: "",
-    addr: "",
-    job: "",
+    name: '',
+    last_name: '',
+    addr: '',
+    job: '',
     age: 0,
-    phone_no: "",
-    gender: "",
-    martial_status: "",
+    phone_no: '',
+    gender: '',
+    xray: '',
+    martial_status: '',
     hiv: false,
     hcv: false,
     hbs: false,
     pregnancy: false,
     diabetes: false,
     reflux_esophagitis: false,
-    notes: "",
+    notes: '',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [formError, setFormError] = useState("");
+  const [formError, setFormError] = useState('');
 
   const [newTreatment, setNewTreatment] = useState({
-    type_of_treatment: "",
-    teeths: "",
-    amount: "0",
-    paid: "0",
+    type_of_treatment: '',
+    teeths: '',
+    amount: '0',
+    paid: '0',
   });
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(!open);
@@ -75,13 +76,13 @@ export default function PatientDetail() {
 
       const response = await get(`/api/patient/${patientId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
       if (!response.success) {
         console.log(response.data);
-        setError("Failed to fetch patient data");
+        setError('Failed to fetch patient data');
         setLoading(false);
         return;
       }
@@ -111,13 +112,13 @@ export default function PatientDetail() {
 
     const response = await del(`/api/patient/${patientId}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
     if (!response.success) {
       return <div>{response.data}</div>;
     }
-    navigate("/dashboard/patients");
+    navigate('/dashboard/patients');
   };
   // Pagination Part
   const {
@@ -138,13 +139,13 @@ export default function PatientDetail() {
   if (loading) return <p>Loading patient data...</p>;
   if (error) return <p>{error}</p>;
 
-  const Table_head_logs = ["Message"];
+  const Table_head_logs = ['Message'];
   const Table_head_treatment = [
-    "Type of Treatment",
-    "Amount",
-    "Remaining Amount",
-    "Teeths",
-    "Action",
+    'Type of Treatment',
+    'Amount',
+    'Remaining Amount',
+    'Teeths',
+    'Action',
   ];
 
   // Hanlde Treatment Update:
@@ -163,7 +164,7 @@ export default function PatientDetail() {
       setSelectedOps([treatment.type_of_treatment]);
       updateTeethGraph((prevTeethGraph) => {
         const updatedGraph = { ...prevTeethGraph };
-        const selectedTeeths = treatment.teeths.split(",").filter(Boolean);
+        const selectedTeeths = treatment.teeths.split(',').filter(Boolean);
         selectedTeeths.forEach((toothId) => {
           updatedGraph[toothId] = true;
         });
@@ -175,7 +176,7 @@ export default function PatientDetail() {
   const get_teeths_from_graph = (teeths) => {
     return Object.keys(teeths)
       .filter((key) => teeths[key] === true)
-      .join(",");
+      .join(',');
   };
   const handleAddTreatment = () => {
     const new_treatment = {
@@ -185,26 +186,26 @@ export default function PatientDetail() {
     };
 
     if (
-      new_treatment.amount === "0" ||
+      new_treatment.amount === '0' ||
       Math.sign(new_treatment.amount) == -1 ||
-      new_treatment.name === ""
+      new_treatment.name === ''
     ) {
       setFormError(
-        "Please Ensure you have Choosen the Treatement and added the Correct Amount!"
+        'Please Ensure you have Choosen the Treatement and added the Correct Amount!'
       );
     } else {
-      setFormError("");
+      setFormError('');
 
       handleUpdate(new_treatment);
       const updatedTreatments = treatments.map((val) => {
         if (val.id === new_treatment.id) {
           if (!new_treatment.paid) {
-            new_treatment.paid = "0";
+            new_treatment.paid = '0';
           }
           const newAmount = new_treatment.real_amount - new_treatment.paid;
 
           new_treatment.real_amount = newAmount;
-          setFormError("");
+          setFormError('');
           return new_treatment;
         }
         return val;
@@ -218,7 +219,7 @@ export default function PatientDetail() {
   const handleUpdate = async (new_treatment) => {
     const newResponse = await put(`/api/treatment/${new_treatment.id}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: new_treatment,
     });
@@ -229,25 +230,25 @@ export default function PatientDetail() {
       return;
     }
 
-    if (new_treatment.paid != "" && new_treatment.paid != "0") {
+    if (new_treatment.paid != '' && new_treatment.paid != '0') {
       const PayResponse = await post(
         `/api/treatment/${new_treatment.id}/pay/`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
           body: { paid: new_treatment.paid },
         }
       );
 
       if (!PayResponse.success) {
-        setFormError(PayResponse.data["wrong amount"]);
+        setFormError(PayResponse.data['wrong amount']);
         setOpen(true);
         console.log(PayResponse.data);
 
         return;
       }
-      setFormError("");
+      setFormError('');
     }
   };
 
@@ -263,16 +264,16 @@ export default function PatientDetail() {
             to={`/dashboard/patients/edit/${state?.id}`}
             state={{ data: data }}
           >
-            <PencilIcon style={{ height: "20px" }} />
+            <PencilIcon style={{ height: '20px' }} />
           </Link>
           <Link onClick={handleDelete}>
-            <TrashIcon style={{ height: "20px" }} />
+            <TrashIcon style={{ height: '20px' }} />
           </Link>
 
           <ShareIcon
             className="cursor-pointer"
             onClick={handleOpenShare}
-            style={{ height: "20px" }}
+            style={{ height: '20px' }}
           />
         </div>
 
@@ -355,6 +356,11 @@ export default function PatientDetail() {
                 )}
             </ul>
           </div>
+          {/* X-Ray */}
+          <div>
+            <p className="text-sm text-gray-500">X-Ray</p>
+            <p className="text-lg font-medium text-gray-900">{patient.xray}</p>
+          </div>
 
           {/* Notes */}
           <div className="md:col-span-2">
@@ -380,7 +386,7 @@ export default function PatientDetail() {
                     <table className="w-full min-w-max table-auto text-left">
                       <thead>
                         <tr>
-                          {Table_head_logs.filter((head) => head != "id").map(
+                          {Table_head_logs.filter((head) => head != 'id').map(
                             (head) => (
                               <th
                                 key={head}
@@ -434,7 +440,7 @@ export default function PatientDetail() {
                       <thead>
                         <tr>
                           {Table_head_treatment.filter(
-                            (head) => head != "id"
+                            (head) => head != 'id'
                           ).map((head) => (
                             <th
                               key={head}
@@ -511,7 +517,7 @@ export default function PatientDetail() {
                     />
                   </div>
                   <AddTreatmentModal
-                    mode={"edit"}
+                    mode={'edit'}
                     open={open}
                     handleOpen={handleClose}
                     newTreatment={newTreatment}
