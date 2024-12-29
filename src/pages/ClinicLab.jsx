@@ -61,6 +61,18 @@ export default function ClinicLab() {
     }
   };
 
+  const getColor = (state) => {
+    return state === 'waiting'
+      ? 'orange'
+      : state === 'pending'
+      ? 'orange'
+      : state === 'completed'
+      ? 'green'
+      : state === 'warning'
+      ? 'red'
+      : 'black'; // default color if none of the states match
+  };
+
   return (
     <div>
       <div className="flex-col table patient-table">
@@ -80,6 +92,15 @@ export default function ClinicLab() {
               <table className="w-full min-w-max table-auto text-left">
                 <thead>
                   <tr>
+                    <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal leading-none opacity-70"
+                      >
+                        Status
+                      </Typography>
+                    </th>
                     <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
                       <Typography
                         variant="small"
@@ -140,6 +161,15 @@ export default function ClinicLab() {
                 <tbody>
                   {currentItems.map((lab) => (
                     <tr key={lab.id} className="even:bg-blue-gray-50/50">
+                      <td className="p-4">
+                        <Typography
+                          variant="small"
+                          color={getColor(lab.status)}
+                          className="font-normal"
+                        >
+                          {lab.status}
+                        </Typography>
+                      </td>
                       <td className="p-4">
                         <Typography
                           variant="small"
