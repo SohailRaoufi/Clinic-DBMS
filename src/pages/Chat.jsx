@@ -26,7 +26,6 @@ export default function Chat() {
       });
 
       if (!response.success) {
-        console.log(response.data);
         return;
       }
 

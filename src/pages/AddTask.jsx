@@ -1,62 +1,58 @@
-import { Typography, Input, Button, Textarea } from "@material-tailwind/react";
-import { useState, useEffect } from "react";
-import { post } from "../utils/ApiFetch";
-import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { Typography, Input, Button, Textarea } from '@material-tailwind/react';
+import { useState, useEffect } from 'react';
+import { post } from '../utils/ApiFetch';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
-import "../assets/styles/addappointment.css";
-import { get } from "../utils/ApiFetch";
+import '../assets/styles/addappointment.css';
+import { get } from '../utils/ApiFetch';
 
 export default function AddTask() {
   const navigate = useNavigate();
 
-  const user = jwtDecode(localStorage.getItem("token"));  
-  
-  const [users,setUsers] = useState([]);
+  const user = jwtDecode(localStorage.getItem('token'));
+
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
-    title: "",
-    assigned_to:null,
-    assigned_by:user.user_id,
-    due_to: "",
-    description:""
+    title: '',
+    assigned_to: null,
+    assigned_by: user.user_id,
+    due_to: '',
+    description: '',
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]:value,
+      [name]: value,
     }));
-    console.log(formData);
-    
-    
   };
-useEffect(() => {
+  useEffect(() => {
     const fetchUsers = async () => {
-        try {
-          const response = await get("api/chats/", {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
-          if (!response.success) {
-            throw new Error("Network response was not ok");
-          }
-          const data = await response.data;
-          setUsers(data);
-        } catch (error) {
-          console.error("Error fetching users:", error);
+      try {
+        const response = await get('api/chats/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        if (!response.success) {
+          throw new Error('Network response was not ok');
         }
-      };
+        const data = await response.data;
+        setUsers(data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
 
-      fetchUsers();
-}, [])
-  
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await post("/api/tasks/", {
+    const response = await post('/api/tasks/', {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: {
         ...formData,
@@ -64,9 +60,9 @@ useEffect(() => {
     });
 
     if (response.success) {
-      navigate("/dashboard/tasks/")
+      navigate('/dashboard/tasks/');
     } else {
-      console.error("Failed to create appointment");
+      console.error('Failed to create appointment');
     }
   };
 
@@ -88,23 +84,24 @@ useEffect(() => {
             value={formData.title}
             onChange={handleChange}
           />
-          
 
           <div>
-          <Typography>Staff</Typography>
+            <Typography>Staff</Typography>
             <select
-            onChange={handleChange}
-            name="assigned_to"
-            value={formData.assigned_to}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              onChange={handleChange}
+              name="assigned_to"
+              value={formData.assigned_to}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-            <option value="">Select</option>
-            {users.map((user) => (
-                <option key={user.id} value={user.id} >{user.username}</option>
-            ))}
+              <option value="">Select</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.username}
+                </option>
+              ))}
             </select>
-        </div>
+          </div>
           <Typography>Due to</Typography>
           <Input
             size="sm"
@@ -116,8 +113,12 @@ useEffect(() => {
             onChange={handleChange}
           />
           <Typography>Task Detail</Typography>
-          <Textarea onChange={handleChange} value={formData.description} name="description" label="Detail"/>
-          
+          <Textarea
+            onChange={handleChange}
+            value={formData.description}
+            name="description"
+            label="Detail"
+          />
 
           <br />
           <Button type="submit" variant="h1">

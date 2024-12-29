@@ -57,7 +57,6 @@ export default function AddAppointment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     const response = await post('/api/appointment/', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,

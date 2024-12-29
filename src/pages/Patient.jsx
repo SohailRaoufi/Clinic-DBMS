@@ -34,14 +34,11 @@ export default function Patient() {
         },
       });
       if (!response.success) {
-        console.log(response.data);
-        console.log(response.status);
         return;
       }
 
       const data = response?.data;
       if (!data || !data.results) {
-        console.log(`Unexpected data format: ${data}`);
         return;
       }
 
@@ -63,14 +60,11 @@ export default function Patient() {
     });
 
     if (!response.success) {
-      console.log(response.data);
-      console.log(response.status);
       return;
     }
 
     const data = response?.data;
     if (!data || !data.results) {
-      console.log(`Unexpected data format: ${data}`);
       return;
     }
     setHasNext(data.next);
@@ -86,14 +80,11 @@ export default function Patient() {
     });
 
     if (!response.success) {
-      console.log(response.data);
-      console.log(response.status);
       return;
     }
 
     const data = response?.data;
     if (!data || !data.results) {
-      console.log(`Unexpected data format: ${data}`);
       return;
     }
     setHasNext(data.next);
@@ -126,14 +117,11 @@ export default function Patient() {
         }
       );
       if (!response.success) {
-        console.log(response.data);
-        console.log(response.status);
         return;
       }
 
       const data = response?.data;
       if (!data || !data.results) {
-        console.log(`Unexpected data format: ${data}`);
         return;
       }
       setCountP(data.count);

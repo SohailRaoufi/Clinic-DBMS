@@ -40,7 +40,7 @@ const handleResponse = async (response: Response): Promise<ReturnType> => {
 };
 
 const handleServerError = (error: Error) => {
-  return { success: false, status: 500, data: { detail: "Server Error!" } };
+  return { success: false, status: 500, data: { detail: 'Server Error!' } };
 };
 
 // GET request
@@ -52,9 +52,9 @@ export const get = async (
   const url = buildUrl(path, params);
 
   const response = await fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...headers,
     },
   });
@@ -72,15 +72,13 @@ export const post = async (
 
   try {
     const response = await fetch(url, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...headers,
       },
       body: JSON.stringify(body),
     });
-
-    console.log(response);
 
     return handleResponse(response);
   } catch (e: any) {
@@ -97,9 +95,9 @@ export const put = async (
   const url = buildUrl(path);
 
   const response = await fetch(url, {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...headers,
     },
     body: JSON.stringify(body),
@@ -117,9 +115,9 @@ export const patch = async (
   const url = buildUrl(path);
 
   const response = await fetch(url, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...headers,
     },
     body: JSON.stringify(body),
@@ -137,9 +135,9 @@ export const del = async (
   const url = buildUrl(path);
 
   const response = await fetch(url, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...headers,
     },
   });

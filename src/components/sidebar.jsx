@@ -67,8 +67,8 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        {user.role !== UserRole.Staff ||
-          (user.role !== UserRole.Admin && (
+        {user.role === UserRole.Staff ||
+          (user.role === UserRole.Admin && (
             <>
               <Accordion open={open === 2}>
                 <Link to="/dashboard/patients">

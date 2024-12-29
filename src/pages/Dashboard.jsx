@@ -79,7 +79,6 @@ export default function Dashboard() {
             dateFormatter.formatToParts(appointmentDate);
 
           const afghanDate = `${month} ${day}  ${year}`;
-          console.log(afghanDate);
 
           return {
             ...appointment,
@@ -115,7 +114,6 @@ export default function Dashboard() {
       date.setDate(date.getDate() + 1);
       const gregorianDate = date.toISOString().split('T')[0];
       setDate(gregorianDate);
-      console.log(gregorianDate);
 
       setJalaliDate(dateObject.format('YYYY/MM/DD')); // Update displayed Jalali date if needed
     }

@@ -14,7 +14,6 @@ const RoleBasedGuard = ({ allowedRoles }) => {
 
     try {
       const user = jwtDecode(token);
-      console.log(user);
 
       return allowedRoles.includes(user.role); // Check if user.role is in allowedRoles
     } catch (error) {

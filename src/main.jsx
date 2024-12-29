@@ -101,14 +101,19 @@ const router = createBrowserRouter([
                 path: '/dashboard/daily/edit/:id',
                 element: <AddDaily isEditing={true} />,
               },
+            ],
+          },
+
+          {
+            element: (
+              <RoleBasedGuard
+                allowedRoles={[UserRole.Staff, UserRole.Doctor]}
+              />
+            ),
+            children: [
               {
-                element: <RoleBasedGuard allowedRoles={[UserRole.Staff]} />,
-                children: [
-                  {
-                    path: '/dashboard/mytasks',
-                    element: <MyTasks />,
-                  },
-                ],
+                path: '/dashboard/mytasks',
+                element: <MyTasks />,
               },
             ],
           },

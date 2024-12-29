@@ -1,25 +1,25 @@
-import { Typography, Input, Button } from "@material-tailwind/react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../assets/styles/auth.css";
-import { post } from "../utils/ApiFetch";
+import { Typography, Input, Button } from '@material-tailwind/react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../assets/styles/auth.css';
+import { post } from '../utils/ApiFetch';
 
 export default function Auth() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const loginUser = async (e) => {
     e.preventDefault();
-    if (username == "" || password == "") {
-      setError("Fill The Fields!");
+    if (username == '' || password == '') {
+      setError('Fill The Fields!');
     } else {
       setError(null);
       setLoading(true);
 
-      const response = await post("/api/auth/", {
+      const response = await post('/api/auth/', {
         body: {
           username: username,
           password: password,
@@ -32,9 +32,9 @@ export default function Auth() {
         return;
       }
       if (response.data?.token) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", username); // Store JWT
-        navigate("/dashboard"); // Redirect to home or dashboard after login
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', username); // Store JWT
+        navigate('/dashboard'); // Redirect to home or dashboard after login
       }
       setLoading(false);
     }
@@ -86,7 +86,7 @@ export default function Auth() {
                   <span className="sr-only">Loading...</span>
                 </div>
               ) : (
-                "Login"
+                'Login'
               )}
             </Button>
           </form>

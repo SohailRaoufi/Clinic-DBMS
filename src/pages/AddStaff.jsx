@@ -27,8 +27,6 @@ export default function AddStaff({ isEditing = false }) {
   };
 
   const handleSubmit = async (e) => {
-    console.log('here');
-    console.log(formData);
     e.preventDefault();
     if (!isEditing) {
       const response = await post('/api/staff/', {
@@ -55,7 +53,6 @@ export default function AddStaff({ isEditing = false }) {
       });
 
       if (!updateRespones.success) {
-        console.log(updateRespones.data);
         return;
       }
 

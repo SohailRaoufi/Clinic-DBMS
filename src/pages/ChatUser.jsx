@@ -34,7 +34,6 @@ const ChatInterface = () => {
 
     if (wsRef.current) {
       wsRef.current.onopen = () => {
-        console.log('WebSocket connection opened');
         // Initial connection request, could include the current email or user info
         wsRef.current.send(
           JSON.stringify({

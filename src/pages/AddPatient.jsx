@@ -139,7 +139,6 @@ export default function AddPatient({ isEditing = false }) {
       });
       if (!response.success) {
         setFormError(response.data);
-        console.log(response);
 
         return;
       }
@@ -161,7 +160,6 @@ export default function AddPatient({ isEditing = false }) {
 
         if (!newResponse.success) {
           setFormError(newResponse.data);
-          console.log(response);
 
           return;
         }
@@ -175,7 +173,6 @@ export default function AddPatient({ isEditing = false }) {
       });
       if (!response.success) {
         setFormError(response.data);
-        console.log(response);
 
         return;
       }

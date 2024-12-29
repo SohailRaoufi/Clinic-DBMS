@@ -77,7 +77,6 @@ const AnalyticsPage = () => {
       labels = analyticsData.payments.map((p) => p.name);
       values = analyticsData.payments.map((p) => p.payment);
     } else if (analyticsType === 'month' && analyticsData.daily_payments) {
-      console.log(analyticsData);
       labels = Object.keys(analyticsData.daily_payments);
       values = Object.values(analyticsData.daily_payments);
     } else if (analyticsType === 'year' && analyticsData.monthly_payments) {

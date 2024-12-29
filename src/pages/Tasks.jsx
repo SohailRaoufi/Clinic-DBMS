@@ -87,7 +87,6 @@ export default function Task() {
         const filterd = tasks.filter(
           (t) => t.assigned_to === Number(filterUser)
         );
-        console.log(filterd);
 
         setfilteredTasks(filterd);
       }

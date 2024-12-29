@@ -34,13 +34,11 @@ export default function Staff() {
         },
       });
       if (!response.success) {
-        console.log(response.data);
         return;
       }
 
       const data = response?.data;
       if (!data) {
-        console.log(`Unexpected data format: ${data}`);
         return;
       }
 

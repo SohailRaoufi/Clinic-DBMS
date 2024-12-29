@@ -81,7 +81,6 @@ export default function PatientDetail() {
       });
 
       if (!response.success) {
-        console.log(response.data);
         setError('Failed to fetch patient data');
         setLoading(false);
         return;
@@ -226,8 +225,6 @@ export default function PatientDetail() {
     });
 
     if (!newResponse.success) {
-      console.log(newResponse);
-
       return;
     }
 
@@ -245,7 +242,6 @@ export default function PatientDetail() {
       if (!PayResponse.success) {
         setFormError(PayResponse.data['wrong amount']);
         setOpen(true);
-        console.log(PayResponse.data);
 
         return;
       }
