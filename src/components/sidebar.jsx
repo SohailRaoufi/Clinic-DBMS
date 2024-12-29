@@ -227,6 +227,23 @@ export function NavbarSimple() {
             </Accordion>
           </>
         )}
+        <Accordion open={open === 7}>
+          <Link to="/dashboard/dental-lab">
+            <ListItem className="p-0" selected={open === 7}>
+              <AccordionHeader
+                onClick={() => handleOpen(7)}
+                className="border-b-0 p-3"
+              >
+                <ListItemPrefix>
+                  <PresentationChartBarIcon className="h-5 w-5" />
+                </ListItemPrefix>
+                <Typography color="blue-gray" className="mr-auto font-normal">
+                  Clinic Lab
+                </Typography>
+              </AccordionHeader>
+            </ListItem>
+          </Link>
+        </Accordion>
 
         <div>
           {user.is_admin && (

@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import '../assets/styles/addappointment.css';
 import PropTypes from 'prop-types';
 
-export default function AddStaff({ isEditing = false }) {
+export default function AddDaily({ isEditing = false }) {
   const navigate = useNavigate();
   const { state } = useLocation();
   const data = useMemo(() => state?.data || {}, [state]);
@@ -117,6 +117,6 @@ export default function AddStaff({ isEditing = false }) {
   );
 }
 
-AddStaff.propTypes = {
+AddDaily.propTypes = {
   isEditing: PropTypes.bool,
 };

@@ -29,6 +29,8 @@ import MyTasks from './pages/MyTasks';
 import './index.css';
 import RoleBasedGuard from './utils/RoleBasedGuard';
 import { UserRole } from './common/enums/user-role';
+import AddClinicLab from './pages/AddClinicLab';
+import ClinicLab from './pages/ClinicLab';
 if (!localStorage.getItem('HOST')) {
   localStorage.setItem('HOST', 'http://localhost:8000');
 }
@@ -67,6 +69,18 @@ const router = createBrowserRouter([
           {
             path: '/dashboard/chat/:id',
             element: <ChatUser />,
+          },
+          {
+            path: '/dashboard/dental-lab',
+            element: <ClinicLab />,
+          },
+          {
+            path: '/dashboard/dental-lab/add',
+            element: <AddClinicLab />,
+          },
+          {
+            path: '/dashboard/dental-lab/edit/:id',
+            element: <AddClinicLab isEditing={true} />,
           },
           {
             element: (

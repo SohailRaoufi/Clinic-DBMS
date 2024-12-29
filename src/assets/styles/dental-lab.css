@@ -1,0 +1,8 @@
+.dental-lab {
+  display: flex;
+  justify-content: center;
+}
+
+.form-appointment {
+  width: 30rem;
+}
