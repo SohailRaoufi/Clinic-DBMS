@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
-import { get, del } from "../utils/ApiFetch";
-import { Typography } from "@material-tailwind/react";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { get, del } from '../utils/ApiFetch';
+import { Typography } from '@material-tailwind/react';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function StaffDetail() {
   const { state } = useLocation();
@@ -14,7 +14,7 @@ export default function StaffDetail() {
     const getStaffDetail = async () => {
       const response = await get(`/api/staff/${state.id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
@@ -33,7 +33,7 @@ export default function StaffDetail() {
     const staffId = state.id;
     const response = await del(`/api/staff/${staffId}/`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
@@ -41,7 +41,7 @@ export default function StaffDetail() {
       console.error(response.data);
       return;
     }
-    navigate("/dashboard/staff");
+    navigate('/dashboard/staff');
   };
 
   return (
@@ -49,10 +49,10 @@ export default function StaffDetail() {
       <Typography variant="h2" className="flex gap-4 items-center">
         Staff {state?.id} Detail
         <Link to={`/dashboard/staff/edit/${state?.id}`} state={{ data: staff }}>
-          <PencilIcon style={{ height: "22px" }} />
+          <PencilIcon style={{ height: '22px' }} />
         </Link>
         <Link onClick={handleDelete}>
-          <TrashIcon style={{ height: "22px" }} />
+          <TrashIcon style={{ height: '22px' }} />
         </Link>
       </Typography>
       <div>
@@ -62,6 +62,10 @@ export default function StaffDetail() {
       <div>
         <Typography variant="h4">Email</Typography>
         <Typography>{staff.email}</Typography>
+      </div>
+      <div>
+        <Typography variant="h4">Role</Typography>
+        <Typography>{staff.role}</Typography>
       </div>
     </div>
   );

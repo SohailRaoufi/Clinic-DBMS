@@ -67,31 +67,30 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        {user.role === UserRole.Staff ||
-          (user.role === UserRole.Admin && (
-            <>
-              <Accordion open={open === 2}>
-                <Link to="/dashboard/patients">
-                  <ListItem className="p-0" selected={open === 2}>
-                    <AccordionHeader
-                      onClick={() => handleOpen(2)}
-                      className="border-b-0 p-3"
+        {(user.role === UserRole.Staff || user.role === UserRole.Admin) && (
+          <>
+            <Accordion open={open === 2}>
+              <Link to="/dashboard/patients">
+                <ListItem className="p-0" selected={open === 2}>
+                  <AccordionHeader
+                    onClick={() => handleOpen(2)}
+                    className="border-b-0 p-3"
+                  >
+                    <ListItemPrefix>
+                      <ShoppingBagIcon className="h-5 w-5" />
+                    </ListItemPrefix>
+                    <Typography
+                      color="blue-gray"
+                      className="mr-auto font-normal"
                     >
-                      <ListItemPrefix>
-                        <ShoppingBagIcon className="h-5 w-5" />
-                      </ListItemPrefix>
-                      <Typography
-                        color="blue-gray"
-                        className="mr-auto font-normal"
-                      >
-                        Patient
-                      </Typography>
-                    </AccordionHeader>
-                  </ListItem>
-                </Link>
-              </Accordion>
-            </>
-          ))}
+                      Patient
+                    </Typography>
+                  </AccordionHeader>
+                </ListItem>
+              </Link>
+            </Accordion>
+          </>
+        )}
         <Accordion open={open === 3}>
           <Link to="/dashboard/appointments">
             <ListItem className="p-0" selected={open === 3}>
