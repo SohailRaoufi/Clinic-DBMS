@@ -63,6 +63,7 @@ export default function AddClinicLab({ isEditing = false }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const url = isEditing ? `/api/lab/${data.id}/` : '/api/lab/';
     const method = isEditing ? put : post;
 
@@ -86,8 +87,6 @@ export default function AddClinicLab({ isEditing = false }) {
 
   useEffect(() => {
     if (isEditing && data) {
-      console.log(data);
-
       setFormData({
         name: data.name || '',
         teeths: data.teeths || '',
@@ -97,6 +96,13 @@ export default function AddClinicLab({ isEditing = false }) {
         is_called: data.is_called || false,
         is_done: data.is_done || false,
       });
+
+      const teethObject = data.teeths.split(',').reduce((acc, curr) => {
+        acc[curr] = true;
+        return acc;
+      }, {});
+
+      setTeethGraph(teethObject);
     }
   }, [data, isEditing]);
 
@@ -140,7 +146,7 @@ export default function AddClinicLab({ isEditing = false }) {
               Select Teeth
             </Button>
 
-            <Typography>Day</Typography>
+            <Typography>From</Typography>
             <Input
               size="sm"
               name="day"
@@ -148,7 +154,7 @@ export default function AddClinicLab({ isEditing = false }) {
               color="teal"
               type="date"
               required
-              value={formData.day}
+              value={formData.day.split('T')[0]}
               onChange={handleChange}
             />
 
@@ -160,7 +166,7 @@ export default function AddClinicLab({ isEditing = false }) {
               color="teal"
               type="date"
               required
-              value={formData.to}
+              value={formData.to.split('T')[0]}
               onChange={handleChange}
             />
 

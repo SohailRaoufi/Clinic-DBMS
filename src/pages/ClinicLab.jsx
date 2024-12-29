@@ -165,7 +165,7 @@ export default function ClinicLab() {
                           className="font-normal"
                           style={{ direction: 'rtl' }}
                         >
-                          {lab.day}
+                          {lab.day.split('T')[0]}
                         </Typography>
                       </td>
                       <td className="p-4">
@@ -174,7 +174,7 @@ export default function ClinicLab() {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {lab.to}
+                          {lab.to.split('T')[0]}
                         </Typography>
                       </td>
                       <td className="p-4">

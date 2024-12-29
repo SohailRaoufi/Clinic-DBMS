@@ -27,6 +27,7 @@ import { LogOut } from '../utils/Logout';
 import { useNavigate } from 'react-router-dom';
 import { ChartBarIcon } from '@heroicons/react/16/solid';
 import { UserRole } from '../common/enums/user-role';
+import { CubeIcon } from '@heroicons/react/24/outline';
 
 export function NavbarSimple() {
   const [open, setOpen] = React.useState(0);
@@ -235,7 +236,7 @@ export function NavbarSimple() {
                 className="border-b-0 p-3"
               >
                 <ListItemPrefix>
-                  <PresentationChartBarIcon className="h-5 w-5" />
+                  <CubeIcon className="h-5 w-5" />
                 </ListItemPrefix>
                 <Typography color="blue-gray" className="mr-auto font-normal">
                   Clinic Lab
