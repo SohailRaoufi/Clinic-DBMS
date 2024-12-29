@@ -202,9 +202,12 @@ export default function PatientDetail() {
           if (!new_treatment.paid) {
             new_treatment.paid = '0';
           }
-          const newAmount = new_treatment.real_amount - new_treatment.paid;
-
-          new_treatment.real_amount = newAmount;
+          if (!(parseFloat(new_treatment.paid) > parseFloat(new_treatment.real_amount))){
+              const newAmount = new_treatment.real_amount - new_treatment.paid;
+              new_treatment.real_amount = newAmount;
+          }else{
+              alert("Invalid Amount ");
+          }
           setFormError('');
           return new_treatment;
         }
@@ -217,6 +220,9 @@ export default function PatientDetail() {
   };
 
   const handleUpdate = async (new_treatment) => {
+    if (parseFloat(new_treatment.paid) > parseFloat(new_treatment.real_amount)){
+      return;
+    }
     const newResponse = await put(`/api/treatment/${new_treatment.id}/`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
