@@ -66,7 +66,7 @@ export default function ClinicLab() {
       ? 'orange'
       : state === 'pending'
       ? 'orange'
-      : state === 'completed'
+      : state === 'done'
       ? 'green'
       : state === 'warning'
       ? 'red'
