@@ -1,25 +1,27 @@
 import { Button, Typography, Input, Checkbox } from '@material-tailwind/react';
 import { TrashIcon } from '@heroicons/react/24/outline';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { post, put } from '../utils/ApiFetch';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import json from '../utils/DataObjects.json';
 import AddTreatmentModal from '../components/Treatment';
 
+import PropTypes from 'prop-types';
+
 import '../assets/styles/addpatient.css';
 export default function AddPatient({ isEditing = false }) {
   const location = useLocation();
-  const data = location.state?.data || [];
+  const data = useMemo(() => location.state?.data || {}, [location.state]);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
-  const [formError, setFormError] = useState();
+  const [formError, setFormError] = useState(null);
 
   const navigate = useNavigate();
 
   const handleOpen = () => setOpen(!open);
-  const [oldTreatments, setOldTreatments] = useState(data.treatments || []);
+  const [oldTreatments] = useState(data.treatments || []);
   const [treatments, setTreatments] = useState([]);
   const [newTreatment, setNewTreatment] = useState({
     type_of_treatment: '',
@@ -387,3 +389,7 @@ export default function AddPatient({ isEditing = false }) {
     </div>
   );
 }
+
+AddPatient.propTypes = {
+  isEditing: PropTypes.bool,
+};

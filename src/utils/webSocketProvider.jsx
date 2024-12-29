@@ -1,6 +1,7 @@
-
 // WebSocketContext.js
-import React, { createContext, useState, useContext, useCallback } from "react";
+import { createContext, useState, useContext, useCallback } from 'react';
+
+import PropTypes from 'prop-types';
 
 const WebSocketContext = createContext(null);
 
@@ -9,7 +10,7 @@ export const WebSocketProvider = ({ children }) => {
 
   const initializeWebSocket = useCallback(() => {
     if (!websocket) {
-      const accessToken = localStorage.getItem("token");
+      const accessToken = localStorage.getItem('token');
       const ws = new WebSocket(
         `ws://${import.meta.env.VITE_BACKEND_URL}ws?access_token=${accessToken}`
       );
@@ -36,3 +37,6 @@ export const WebSocketProvider = ({ children }) => {
 
 export const useWebSocket = () => useContext(WebSocketContext);
 
+WebSocketProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};

@@ -1,18 +1,16 @@
 import {
   Card,
   Typography,
-  Button,
   Accordion,
   AccordionHeader,
   ListItem,
-  ListItemPrefix,
-} from "@material-tailwind/react";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+} from '@material-tailwind/react';
+import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
-import { useWebSocket } from "../utils/webSocketProvider";
+import { useWebSocket } from '../utils/webSocketProvider';
 
-import { get } from "../utils/ApiFetch";
+import { get } from '../utils/ApiFetch';
 
 export default function Chat() {
   const [staff, setStaff] = useState([]);
@@ -23,7 +21,7 @@ export default function Chat() {
     const hanldeStaff = async () => {
       const response = await get(`/api/chats/`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
@@ -44,16 +42,16 @@ export default function Chat() {
 
   return (
     <div className="flex">
-      <div style={{ width: "100%", paddingLeft: "1rem" }} className="h-screen">
+      <div style={{ width: '100%', paddingLeft: '1rem' }} className="h-screen">
         <Card className="p-5 rounded-none h-screen">
           <Typography color="black" variant="h4">
             Chat App
           </Typography>
           <hr
-            style={{ marginTop: "1rem" }}
+            style={{ marginTop: '1rem' }}
             className="my-2 border-blue-gray-50"
           />
-          <div style={{ marginTop: "1rem" }}>
+          <div style={{ marginTop: '1rem' }}>
             {staff.map((val, index) => (
               <Accordion key={index} open={open === 1}>
                 <Link
@@ -65,10 +63,7 @@ export default function Chat() {
                   }}
                 >
                   <ListItem className="p-0" selected={open === 1}>
-                    <AccordionHeader
-                      onClick={() => handleOpen(1)}
-                      className="border-b-0 p-3"
-                    >
+                    <AccordionHeader className="border-b-0 p-3">
                       <Typography color="black" className="mr-auto font-normal">
                         {val.username}
                       </Typography>

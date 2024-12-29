@@ -129,6 +129,7 @@ export default function PatientDetail() {
   } = usePagination(logs);
 
   const {
+    // eslint-disable-next-line no-unused-vars
     currentItems: treatmentItems,
     totalPages: totalPagesTreatment,
     currentPage: currentPageTreatment,

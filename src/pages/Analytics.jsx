@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Card,
-  CardHeader,
   CardBody,
   Typography,
   Select,
@@ -9,8 +8,8 @@ import {
   Input,
   Button,
   Spinner,
-} from "@material-tailwind/react";
-import { Bar } from "react-chartjs-2";
+} from '@material-tailwind/react';
+import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,7 +18,7 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 
 ChartJS.register(
   CategoryScale,
@@ -30,14 +29,14 @@ ChartJS.register(
   Legend
 );
 
-import { get } from "../utils/ApiFetch";
+import { get } from '../utils/ApiFetch';
 
 const AnalyticsPage = () => {
-  const [analyticsType, setAnalyticsType] = useState("day");
-  const [data, setData] = useState(new Date().toISOString().split("T")[0]);
+  const [analyticsType, setAnalyticsType] = useState('day');
+  const [data, setData] = useState(new Date().toISOString().split('T')[0]);
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   useEffect(() => {
     setAnalyticsData(null);
@@ -49,23 +48,23 @@ const AnalyticsPage = () => {
 
   const fetchAnalytics = async () => {
     setLoading(true);
-    setError("");
+    setError('');
     try {
       const response = await get(
         `/api/analytics/?type=${analyticsType}&data=${data}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
       if (!response.success) {
-        throw new Error("Network response was not ok");
+        throw new Error('Network response was not ok');
       }
       const result = await response.data;
       setAnalyticsData(result);
     } catch (err) {
-      setError(err.message || "An error occurred");
+      setError(err.message || 'An error occurred');
     }
     setLoading(false);
   };
@@ -74,14 +73,14 @@ const AnalyticsPage = () => {
     if (!analyticsData) return null;
 
     let labels, values;
-    if (analyticsType === "day" && analyticsData.payments) {
+    if (analyticsType === 'day' && analyticsData.payments) {
       labels = analyticsData.payments.map((p) => p.name);
       values = analyticsData.payments.map((p) => p.payment);
-    } else if (analyticsType === "month" && analyticsData.daily_payments) {
+    } else if (analyticsType === 'month' && analyticsData.daily_payments) {
       console.log(analyticsData);
       labels = Object.keys(analyticsData.daily_payments);
       values = Object.values(analyticsData.daily_payments);
-    } else if (analyticsType === "year" && analyticsData.monthly_payments) {
+    } else if (analyticsType === 'year' && analyticsData.monthly_payments) {
       labels = Object.keys(analyticsData.monthly_payments);
       values = Object.values(analyticsData.monthly_payments);
     } else {
@@ -92,9 +91,9 @@ const AnalyticsPage = () => {
       labels,
       datasets: [
         {
-          label: "Payments",
+          label: 'Payments',
           data: values,
-          backgroundColor: "rgba(75, 192, 192, 0.6)",
+          backgroundColor: 'rgba(75, 192, 192, 0.6)',
         },
       ],
     };
@@ -104,7 +103,7 @@ const AnalyticsPage = () => {
 
   return (
     <div
-      style={{ marginTop: "2rem" }}
+      style={{ marginTop: '2rem' }}
       className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8"
     >
       <Card className="w-full max-w-4xl mx-auto">
@@ -121,11 +120,11 @@ const AnalyticsPage = () => {
             </Select>
             <Input
               type={
-                analyticsType === "day"
-                  ? "date"
-                  : analyticsType === "month"
-                  ? "month"
-                  : "number"
+                analyticsType === 'day'
+                  ? 'date'
+                  : analyticsType === 'month'
+                  ? 'month'
+                  : 'number'
               }
               label="Date"
               value={data}
@@ -136,7 +135,7 @@ const AnalyticsPage = () => {
               disabled={loading}
               className="h-10"
             >
-              {loading ? <Spinner /> : "Fetch Analytics"}
+              {loading ? <Spinner /> : 'Fetch Analytics'}
             </Button>
           </div>
 
@@ -145,23 +144,23 @@ const AnalyticsPage = () => {
           {analyticsData && (
             <div
               className="mt-4 h-48 sm:h-64 flex flex-col gap-2"
-              style={{ height: "50rem", width: "100%", overflowY: "auto" }}
+              style={{ height: '50rem', width: '100%', overflowY: 'auto' }}
             >
               <Typography variant="h6" color="blue-gray" className="mb-2">
-                {analyticsType === "day"
+                {analyticsType === 'day'
                   ? `Analytics for ${analyticsData.date}`
-                  : analyticsType === "month"
+                  : analyticsType === 'month'
                   ? `Analytics for ${analyticsData.month}`
                   : `Analytics for ${analyticsData.year}`}
               </Typography>
               <Typography color="blue-gray" className="mb-4">
                 Total Payment: Af {analyticsData.total.toFixed(2)}
               </Typography>
-              <hr style={{ border: "1px solid black" }} />
+              <hr style={{ border: '1px solid black' }} />
               <div className="h-64 sm:h-96">
-                {analyticsType !== "day" && renderChart()}
+                {analyticsType !== 'day' && renderChart()}
               </div>
-              {analyticsType === "day" && analyticsData.payments && (
+              {analyticsType === 'day' && analyticsData.payments && (
                 <div className="mt-4  flex flex-col gap-2">
                   <Typography variant="h6" color="blue-gray" className="mb-2">
                     Payment Details

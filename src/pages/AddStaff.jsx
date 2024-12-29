@@ -1,19 +1,22 @@
-import { Typography, Input, Button } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
-import { post, put } from "../utils/ApiFetch";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Typography, Input, Button } from '@material-tailwind/react';
+import { useState, useEffect, useMemo } from 'react';
+import { post, put } from '../utils/ApiFetch';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import "../assets/styles/addappointment.css";
+import '../assets/styles/addappointment.css';
+
+import PropTypes from 'prop-types';
 
 export default function AddStaff({ isEditing = false }) {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const data = state?.data || [];
+  const data = useMemo(() => state?.data || {}, [state]);
 
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
+    username: '',
+    email: '',
+    password: '',
+    role: '',
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,13 +27,13 @@ export default function AddStaff({ isEditing = false }) {
   };
 
   const handleSubmit = async (e) => {
-    console.log("here");
-    console.log(formData)
+    console.log('here');
+    console.log(formData);
     e.preventDefault();
     if (!isEditing) {
-      const response = await post("/api/staff/", {
+      const response = await post('/api/staff/', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: {
           ...formData,
@@ -38,14 +41,14 @@ export default function AddStaff({ isEditing = false }) {
       });
 
       if (response.success) {
-        navigate("/dashboard/staff/");
+        navigate('/dashboard/staff/');
       } else {
-        console.error("Failed to create staff");
+        console.error('Failed to create staff');
       }
     } else {
       const updateRespones = await put(`/api/staff/${data.id}/`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
 
         body: formData,
@@ -61,19 +64,19 @@ export default function AddStaff({ isEditing = false }) {
   };
 
   useEffect(() => {
-      if (isEditing && data) {
+    if (isEditing && data) {
       setFormData({
-        username: data.username || "",
-        email: data.email || "",
-        password: data.password || "",
+        username: data.username || '',
+        email: data.email || '',
+        password: data.password || '',
       });
     }
-  }, [data]);
+  }, [data, isEditing]);
 
   return (
     <div className="add-appointmnet">
       <Typography className="p-5" variant="h4">
-        {isEditing ? "Edit Staff" : "Add Staff"}
+        {isEditing ? 'Edit Staff' : 'Add Staff'}
       </Typography>
       <div className="form-appointment shadow-lg rounded-lg">
         <form onSubmit={handleSubmit}>
@@ -110,12 +113,27 @@ export default function AddStaff({ isEditing = false }) {
             onChange={handleChange}
           />
 
+          <Typography>Role</Typography>
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="border border-teal-200 focus:border-teal-500 rounded-md p-2 w-full bg-white"
+          >
+            <option value="DOCTOR">Doctor</option>
+            <option value="STAFF">Staff</option>
+          </select>
+
           <br />
           <Button type="submit" variant="h1">
-            {isEditing ? "Update" : "Add"}
+            {isEditing ? 'Update' : 'Add'}
           </Button>
         </form>
       </div>
     </div>
   );
 }
+
+AddStaff.propTypes = {
+  isEditing: PropTypes.bool,
+};

@@ -1,27 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Button,
   Dialog,
   Card,
-  CardHeader,
   CardBody,
-  CardFooter,
   Typography,
   Input,
-  Checkbox,
-} from "@material-tailwind/react";
-import { PlusIcon } from "@heroicons/react/16/solid";
-import { useWebSocket } from "../utils/webSocketProvider";
-import "../assets/styles/ChatUser.css";
+} from '@material-tailwind/react';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import { useWebSocket } from '../utils/webSocketProvider';
+import '../assets/styles/ChatUser.css';
 
 const ChatInterface = () => {
   const { state } = useLocation();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
   const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
-  const messageContainerRef = useRef(null);
+  const [message, setMessage] = useState('');
   const fileInputRef = useRef(null);
   const { websocket, initializeWebSocket, closeWebSocket } = useWebSocket();
   const [email] = useState(state?.email || null);
@@ -38,17 +34,17 @@ const ChatInterface = () => {
 
     if (wsRef.current) {
       wsRef.current.onopen = () => {
-        console.log("WebSocket connection opened");
+        console.log('WebSocket connection opened');
         // Initial connection request, could include the current email or user info
         wsRef.current.send(
           JSON.stringify({
-            type: "connect",
+            type: 'connect',
             email: email,
           })
         );
         wsRef.current.send(
           JSON.stringify({
-            type: "scroll",
+            type: 'scroll',
             page: page,
           })
         );
@@ -59,22 +55,22 @@ const ChatInterface = () => {
       wsRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
-        if (data.type === "chat_history") {
+        if (data.type === 'chat_history') {
           loadingHistory.current = true;
           const reversedMessages = data.messages.messages.reverse();
 
           setMessages((prevMessages) => [...reversedMessages, ...prevMessages]); // Prepend chat history
           setHasNext(data.messages.has_next); // Update whether there are more messages to load
-        } else if (data.type === "new_message") {
+        } else if (data.type === 'new_message') {
           loadingHistory.current = false;
           setMessages((prevMessages) => [...prevMessages, data.message]); // Add new incoming messages
         } else if (data.error) {
-          console.error("Error:", data.error);
+          console.error('Error:', data.error);
         }
       };
 
       wsRef.current.onclose = () => {
-        console.log("WebSocket connection closed");
+        console.log('WebSocket connection closed');
       };
     }
 
@@ -93,7 +89,7 @@ const ChatInterface = () => {
         // Request more messages from the WebSocket server
         wsRef.current.send(
           JSON.stringify({
-            type: "scroll",
+            type: 'scroll',
             page: nextPage,
           })
         );
@@ -101,51 +97,51 @@ const ChatInterface = () => {
     };
     const scrollContainer = scrollRef.current;
     if (scrollContainer) {
-      scrollContainer.addEventListener("scroll", handleScroll);
+      scrollContainer.addEventListener('scroll', handleScroll);
     }
 
     // Cleanup the scroll event listener when the component unmounts
     return () => {
       if (scrollContainer) {
-        scrollContainer.removeEventListener("scroll", handleScroll);
+        scrollContainer.removeEventListener('scroll', handleScroll);
       }
     };
   }, [hasNext, page]);
 
   const displayMessage = (message, index) => {
-    if (message.type === "text") {
+    if (message.type === 'text') {
       return (
         <div
           key={index + 1}
           className={`flex ${
-            message.sender === state?.id ? "justify-start" : "justify-end"
+            message.sender === state?.id ? 'justify-start' : 'justify-end'
           } mb-2`}
         >
           <div
             className={`p-3 rounded-lg max-w-xs ${
               message.sender === state?.id
-                ? "bg-blue-500 text-white"
-                : "bg-black text-white"
+                ? 'bg-blue-500 text-white'
+                : 'bg-black text-white'
             }`}
           >
             <Typography>{message.text}</Typography>
           </div>
         </div>
       );
-    } else if (message.type === "link") {
-      const fileLink = message.link.split("/");
+    } else if (message.type === 'link') {
+      const fileLink = message.link.split('/');
       return (
         <div
           key={index + 1}
           className={`flex ${
-            message.sender === state?.id ? "justify-start" : "justify-end"
+            message.sender === state?.id ? 'justify-start' : 'justify-end'
           } mb-2`}
         >
           <div
             className={`p-3 rounded-lg max-w-xs ${
               message.sender === state?.id
-                ? "bg-green-500 text-white"
-                : "bg-green-500 text-white"
+                ? 'bg-green-500 text-white'
+                : 'bg-green-500 text-white'
             }`}
           >
             <Typography>
@@ -160,22 +156,22 @@ const ChatInterface = () => {
           </div>
         </div>
       );
-    } else if (message.type === "share") {
-      const patientData = message.text.split(",");
+    } else if (message.type === 'share') {
+      const patientData = message.text.split(',');
       const pateintName = patientData[1];
       const pateintID = patientData[0];
       return (
         <div
           key={index + 1}
           className={`flex ${
-            message.sender === state?.id ? "justify-start" : "justify-end"
+            message.sender === state?.id ? 'justify-start' : 'justify-end'
           } mb-2`}
         >
           <div
             className={`p-3 rounded-lg max-w-xs ${
               message.sender === state?.id
-                ? "bg-green-500 text-white"
-                : "bg-green-500 text-white"
+                ? 'bg-green-500 text-white'
+                : 'bg-green-500 text-white'
             }`}
           >
             <Link
@@ -194,11 +190,11 @@ const ChatInterface = () => {
     if (message.trim() && wsRef.current) {
       wsRef.current.send(
         JSON.stringify({
-          type: "text",
+          type: 'text',
           text: message.trim(),
         })
       );
-      setMessage("");
+      setMessage('');
     }
   };
 
@@ -207,10 +203,10 @@ const ChatInterface = () => {
     if (file && wsRef.current) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const base64Data = e.target.result.split(",")[1];
+        const base64Data = e.target.result.split(',')[1];
         wsRef.current.send(
           JSON.stringify({
-            type: "doc",
+            type: 'doc',
             file_data: base64Data,
             file_name: file.name,
           })
@@ -222,7 +218,7 @@ const ChatInterface = () => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       sendMessage();
     }
   };
@@ -267,7 +263,7 @@ const ChatInterface = () => {
           <PlusIcon
             onClick={handleOpen}
             className="cursor-pointer text-black plusIcon"
-            style={{ height: "2rem" }}
+            style={{ height: '2rem' }}
           />
         </div>
       </Card>
@@ -299,4 +295,3 @@ const ChatInterface = () => {
 };
 
 export default ChatInterface;
-

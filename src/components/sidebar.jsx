@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Card,
   Typography,
@@ -8,7 +8,7 @@ import {
   ListItemPrefix,
   Accordion,
   AccordionHeader,
-} from "@material-tailwind/react";
+} from '@material-tailwind/react';
 import {
   PresentationChartBarIcon,
   ShoppingBagIcon,
@@ -18,19 +18,20 @@ import {
   ClockIcon,
   UsersIcon,
   PencilSquareIcon,
-} from "@heroicons/react/24/solid";
-import { jwtDecode } from "jwt-decode";
+} from '@heroicons/react/24/solid';
+import { jwtDecode } from 'jwt-decode';
 
-import "./styles/sidebar.css";
+import './styles/sidebar.css';
 
-import { LogOut } from "../utils/Logout";
-import { useNavigate } from "react-router-dom";
-import { ChartBarIcon } from "@heroicons/react/16/solid";
+import { LogOut } from '../utils/Logout';
+import { useNavigate } from 'react-router-dom';
+import { ChartBarIcon } from '@heroicons/react/16/solid';
+import { UserRole } from '../common/enums/user-role';
 
 export function NavbarSimple() {
   const [open, setOpen] = React.useState(0);
 
-  const user = jwtDecode(localStorage.getItem("token"));
+  const user = jwtDecode(localStorage.getItem('token'));
 
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
@@ -39,7 +40,7 @@ export function NavbarSimple() {
   const navigate = useNavigate();
   const handleLogOut = () => {
     LogOut();
-    navigate("/");
+    navigate('/');
   };
   return (
     <Card className="relative side h-screen shadow-lg p-4">
@@ -66,23 +67,31 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion open={open === 2}>
-          <Link to="/dashboard/patients">
-            <ListItem className="p-0" selected={open === 2}>
-              <AccordionHeader
-                onClick={() => handleOpen(2)}
-                className="border-b-0 p-3"
-              >
-                <ListItemPrefix>
-                  <ShoppingBagIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
-                  Patient
-                </Typography>
-              </AccordionHeader>
-            </ListItem>
-          </Link>
-        </Accordion>
+        {user.role !== UserRole.Staff ||
+          (user.role !== UserRole.Admin && (
+            <>
+              <Accordion open={open === 2}>
+                <Link to="/dashboard/patients">
+                  <ListItem className="p-0" selected={open === 2}>
+                    <AccordionHeader
+                      onClick={() => handleOpen(2)}
+                      className="border-b-0 p-3"
+                    >
+                      <ListItemPrefix>
+                        <ShoppingBagIcon className="h-5 w-5" />
+                      </ListItemPrefix>
+                      <Typography
+                        color="blue-gray"
+                        className="mr-auto font-normal"
+                      >
+                        Patient
+                      </Typography>
+                    </AccordionHeader>
+                  </ListItem>
+                </Link>
+              </Accordion>
+            </>
+          ))}
         <Accordion open={open === 3}>
           <Link to="/dashboard/appointments">
             <ListItem className="p-0" selected={open === 3}>
@@ -117,61 +126,66 @@ export function NavbarSimple() {
             </ListItem>
           </Link>
         </Accordion>
-        <Accordion open={open === 5}>
-          <Link to="/dashboard/daily">
-            <ListItem className="p-0" selected={open === 5}>
-              <AccordionHeader
-                onClick={() => handleOpen(5)}
-                className="border-b-0 p-3"
-              >
-                <ListItemPrefix>
-                  <ClockIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
-                  Daily
-                </Typography>
-              </AccordionHeader>
-            </ListItem>
-          </Link>
-        </Accordion>
-        {!user.is_admin && (
-          <Accordion open={open === 9}>
-          <Link to="/dashboard/mytasks">
-            <ListItem className="p-0" selected={open === 9}>
-              <AccordionHeader
-                onClick={() => handleOpen(9)}
-                className="border-b-0 p-3"
-              >
-                <ListItemPrefix>
-                  <PencilSquareIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
-                  My Tasks
-                </Typography>
-              </AccordionHeader>
-            </ListItem>
-          </Link>
-        </Accordion>
-        )}
-        {user.is_admin && (
-          <>
-          <Accordion open={open === 8}>
-          <Link to="/dashboard/tasks">
-            <ListItem className="p-0" selected={open === 8}>
-              <AccordionHeader
-                onClick={() => handleOpen(8)}
-                className="border-b-0 p-3"
-              >
-                <ListItemPrefix>
-                  <PencilSquareIcon className="h-5 w-5" />
-                </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
-                  {user.is_admin ? "All Tasks" : "My Tasks"}
-                </Typography>
+        {user.role !== UserRole.Doctor && (
+          <Accordion open={open === 5}>
+            <Link to="/dashboard/daily">
+              <ListItem className="p-0" selected={open === 5}>
+                <AccordionHeader
+                  onClick={() => handleOpen(5)}
+                  className="border-b-0 p-3"
+                >
+                  <ListItemPrefix>
+                    <ClockIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  <Typography color="blue-gray" className="mr-auto font-normal">
+                    Daily
+                  </Typography>
                 </AccordionHeader>
               </ListItem>
             </Link>
           </Accordion>
+        )}
+        {user.role !== UserRole.Admin && (
+          <Accordion open={open === 9}>
+            <Link to="/dashboard/mytasks">
+              <ListItem className="p-0" selected={open === 9}>
+                <AccordionHeader
+                  onClick={() => handleOpen(9)}
+                  className="border-b-0 p-3"
+                >
+                  <ListItemPrefix>
+                    <PencilSquareIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  <Typography color="blue-gray" className="mr-auto font-normal">
+                    My Tasks
+                  </Typography>
+                </AccordionHeader>
+              </ListItem>
+            </Link>
+          </Accordion>
+        )}
+        {user.role === UserRole.Admin && (
+          <>
+            <Accordion open={open === 8}>
+              <Link to="/dashboard/tasks">
+                <ListItem className="p-0" selected={open === 8}>
+                  <AccordionHeader
+                    onClick={() => handleOpen(8)}
+                    className="border-b-0 p-3"
+                  >
+                    <ListItemPrefix>
+                      <PencilSquareIcon className="h-5 w-5" />
+                    </ListItemPrefix>
+                    <Typography
+                      color="blue-gray"
+                      className="mr-auto font-normal"
+                    >
+                      {user.role === UserRole.Admin ? 'All Tasks' : 'My Tasks'}
+                    </Typography>
+                  </AccordionHeader>
+                </ListItem>
+              </Link>
+            </Accordion>
             <Accordion open={open === 6}>
               <Link to="/dashboard/staff">
                 <ListItem className="p-0" selected={open === 6}>
@@ -231,8 +245,8 @@ export function NavbarSimple() {
           )}
           <div className="user-box">
             <Typography variant="h5" className="ml-3">
-              {localStorage.getItem("user")[0].toUpperCase() +
-                localStorage.getItem("user").substring(1)}
+              {localStorage.getItem('user')[0].toUpperCase() +
+                localStorage.getItem('user').substring(1)}
             </Typography>
             <hr className="my-2 border-blue-gray-50" />
             <ListItem onClick={handleLogOut}>

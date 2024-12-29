@@ -1,20 +1,20 @@
-import { NavbarSearch } from "../components/Navbar";
-import { Button, Card, Typography } from "@material-tailwind/react";
-import { PlusIcon } from "@heroicons/react/16/solid";
-import { useState, useEffect } from "react";
+import { NavbarSearch } from '../components/Navbar';
+import { Button, Card, Typography } from '@material-tailwind/react';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import { useState, useEffect } from 'react';
 
-import { get } from "../utils/ApiFetch";
+import { get } from '../utils/ApiFetch';
 
-import "../assets/styles/patientPage.css";
-import { Link } from "react-router-dom";
-import Mypagination from "../components/MyPagination";
+import '../assets/styles/patientPage.css';
+import { Link } from 'react-router-dom';
+import Mypagination from '../components/MyPagination';
 
 export default function Staff() {
   const [staff, setStaff] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [filteredStaff, setfilteredStaff] = useState([]);
 
   // Calculate the indexes for the current page
@@ -30,9 +30,9 @@ export default function Staff() {
 
   useEffect(() => {
     const get_data = async () => {
-      const response = await get("/api/staff/", {
+      const response = await get('/api/staff/', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       if (!response.success) {
@@ -52,7 +52,7 @@ export default function Staff() {
     get_data();
   }, []);
   useEffect(() => {
-    if (search.trim() === "") {
+    if (search.trim() === '') {
       setfilteredStaff(staff);
     } else {
       const filterd = staff.filter((a) =>
@@ -61,16 +61,16 @@ export default function Staff() {
 
       setfilteredStaff(filterd);
     }
-  }, [search]);
+  }, [search, staff]);
 
   return (
     <div>
-      <NavbarSearch name={"Staff"} search={search} setSearch={setSearch} />
+      <NavbarSearch name={'Staff'} search={search} setSearch={setSearch} />
       <div className="flex-col table patient-table">
         <div className="table-head">
           <Link to="/dashboard/staff/add">
             <Button className="patient-btn">
-              <PlusIcon style={{ height: "18px" }} />
+              <PlusIcon style={{ height: '18px' }} />
               Add Staff
             </Button>
           </Link>

@@ -1,20 +1,22 @@
-import { Typography, Input, Button, Textarea } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
-import { post, put } from "../utils/ApiFetch";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Typography, Input, Button, Textarea } from '@material-tailwind/react';
+import { useState, useEffect, useMemo } from 'react';
+import { post, put } from '../utils/ApiFetch';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import "../assets/styles/addappointment.css";
+import '../assets/styles/addappointment.css';
+import PropTypes from 'prop-types';
 
 export default function AddStaff({ isEditing = false }) {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const data = state?.data || [];
+  const data = useMemo(() => state?.data || {}, [state]);
 
   const [formData, setFormData] = useState({
-    name: "",
+    name: '',
     payment: 0,
-    note: "",
+    note: '',
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -27,9 +29,9 @@ export default function AddStaff({ isEditing = false }) {
     console.log(formData);
     e.preventDefault();
     if (!isEditing) {
-      const response = await post("/api/daily/", {
+      const response = await post('/api/daily/', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: {
           ...formData,
@@ -37,14 +39,14 @@ export default function AddStaff({ isEditing = false }) {
       });
 
       if (response.success) {
-        navigate("/dashboard/daily/");
+        navigate('/dashboard/daily/');
       } else {
-        console.error("Failed to create Daily!");
+        console.error('Failed to create Daily!');
       }
     } else {
       const updateRespones = await put(`/api/daily/${data.id}/`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
 
         body: formData,
@@ -62,17 +64,17 @@ export default function AddStaff({ isEditing = false }) {
   useEffect(() => {
     if (isEditing && data) {
       setFormData({
-        name: data.name || "",
-        payment: data.payment || "",
-        note: data.note || "",
+        name: data.name || '',
+        payment: data.payment || '',
+        note: data.note || '',
       });
     }
-  }, [data]);
+  }, [data, isEditing]);
 
   return (
     <div className="add-appointmnet">
       <Typography className="p-5" variant="h4">
-        {isEditing ? "Edit Daily" : "Add Daily"}
+        {isEditing ? 'Edit Daily' : 'Add Daily'}
       </Typography>
       <div className="form-appointment shadow-lg rounded-lg">
         <form onSubmit={handleSubmit}>
@@ -109,10 +111,14 @@ export default function AddStaff({ isEditing = false }) {
 
           <br />
           <Button type="submit" variant="h1">
-            {isEditing ? "Update" : "Add"}
+            {isEditing ? 'Update' : 'Add'}
           </Button>
         </form>
       </div>
     </div>
   );
 }
+
+AddStaff.propTypes = {
+  isEditing: PropTypes.bool,
+};
