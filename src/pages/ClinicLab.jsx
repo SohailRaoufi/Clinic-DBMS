@@ -42,7 +42,6 @@ export default function ClinicLab() {
       }
 
       setlab(data?.results);
-      console.log(data);
     };
 
     get_data();

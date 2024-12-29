@@ -86,6 +86,8 @@ export default function AddClinicLab({ isEditing = false }) {
 
   useEffect(() => {
     if (isEditing && data) {
+      console.log(data);
+
       setFormData({
         name: data.name || '',
         teeths: data.teeths || '',
@@ -208,7 +210,7 @@ export default function AddClinicLab({ isEditing = false }) {
             selectTeeth={selectTeeth}
             handleAddTreatment={handleTeethSelection}
             newTreatment={formData}
-            selectedOps={formData.teeths}
+            selectedOps={formData}
             showOperations={false}
           />
         )}
